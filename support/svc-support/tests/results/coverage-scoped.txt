@@ -1,0 +1,23 @@
+Name                                                     Stmts   Miss  Cover
+----------------------------------------------------------------------------
+src\auth\dependencies.py                                    39      1    97%
+src\auth\token_service.py                                   32      3    91%
+src\controllers\graphql\__init__.py                          0      0   100%
+src\controllers\graphql\context.py                          32      1    97%
+src\controllers\graphql\errors.py                           14      0   100%
+src\controllers\graphql\inputs\__init__.py                   0      0   100%
+src\controllers\graphql\inputs\support_inputs.py            30      0   100%
+src\controllers\graphql\resolvers\__init__.py                0      0   100%
+src\controllers\graphql\resolvers\support_resolvers.py      82     10    88%
+src\controllers\graphql\schema.py                            3      0   100%
+src\controllers\graphql\types\__init__.py                    0      0   100%
+src\controllers\graphql\types\attachment_types.py           13      0   100%
+src\controllers\graphql\types\common_types.py                5      0   100%
+src\controllers\graphql\types\message_types.py              18      0   100%
+src\controllers\graphql\types\support_ticket_types.py       33      0   100%
+src\core\utils\constants.py                                 47      0   100%
+src\repositories\merchant_repository.py                     18      4    78%
+src\repositories\ticket_repository.py                       98     24    76%
+src\services\support_ticket_service.py                      60      2    97%
+----------------------------------------------------------------------------
+TOTAL                                                      524     45    91%

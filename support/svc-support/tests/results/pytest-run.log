@@ -1,0 +1,58 @@
+...................................................................      [100%]
+============================== warnings summary ===============================
+..\..\..\..\..\Users\eric\AppData\Local\Temp\claude\C--Mezzofy-Workspace-mz-ai-assistant\2fd60a39-8893-4ab8-9f71-3d68f7198efe\scratchpad\tvenv\Lib\site-packages\starlette\formparsers.py:10
+  C:\Users\eric\AppData\Local\Temp\claude\C--Mezzofy-Workspace-mz-ai-assistant\2fd60a39-8893-4ab8-9f71-3d68f7198efe\scratchpad\tvenv\Lib\site-packages\starlette\formparsers.py:10: PendingDeprecationWarning: Please use `import python_multipart` instead.
+    import multipart
+
+..\..\..\..\..\Users\eric\AppData\Local\Temp\claude\C--Mezzofy-Workspace-mz-ai-assistant\2fd60a39-8893-4ab8-9f71-3d68f7198efe\scratchpad\tvenv\Lib\site-packages\pydantic\_internal\_config.py:295
+  C:\Users\eric\AppData\Local\Temp\claude\C--Mezzofy-Workspace-mz-ai-assistant\2fd60a39-8893-4ab8-9f71-3d68f7198efe\scratchpad\tvenv\Lib\site-packages\pydantic\_internal\_config.py:295: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.10/migration/
+    warnings.warn(DEPRECATION_MESSAGE, DeprecationWarning)
+
+tests/test_auth_rbac.py: 25 warnings
+tests/test_graphql_resolvers.py: 63 warnings
+tests/test_support_ticket_service.py: 211 warnings
+  C:\Users\eric\AppData\Local\Temp\claude\C--Mezzofy-Workspace-mz-ai-assistant\2fd60a39-8893-4ab8-9f71-3d68f7198efe\scratchpad\tvenv\Lib\site-packages\botocore\auth.py:419: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    datetime_now = datetime.datetime.utcnow()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform win32, python 3.13.14-final-0 ----------
+Name                                                     Stmts   Miss  Cover   Missing
+--------------------------------------------------------------------------------------
+src\__init__.py                                              0      0   100%
+src\auth\__init__.py                                         0      0   100%
+src\auth\dependencies.py                                    39      1    97%   44
+src\auth\token_service.py                                   32      3    91%   51-53
+src\controllers\__init__.py                                  0      0   100%
+src\controllers\graphql\__init__.py                          0      0   100%
+src\controllers\graphql\context.py                          32      1    97%   34
+src\controllers\graphql\errors.py                           14      0   100%
+src\controllers\graphql\inputs\__init__.py                   0      0   100%
+src\controllers\graphql\inputs\support_inputs.py            30      0   100%
+src\controllers\graphql\resolvers\__init__.py                0      0   100%
+src\controllers\graphql\resolvers\support_resolvers.py      82     10    88%   102-103, 114-115, 135-136, 165-166, 178-179
+src\controllers\graphql\schema.py                            3      0   100%
+src\controllers\graphql\types\__init__.py                    0      0   100%
+src\controllers\graphql\types\attachment_types.py           13      0   100%
+src\controllers\graphql\types\common_types.py                5      0   100%
+src\controllers\graphql\types\message_types.py              18      0   100%
+src\controllers\graphql\types\support_ticket_types.py       33      0   100%
+src\core\__init__.py                                         0      0   100%
+src\core\config.py                                          25      0   100%
+src\core\database.py                                        23      4    83%   25-30, 47, 52
+src\core\errors.py                                          50      4    92%   69-70, 87, 94
+src\core\utils\__init__.py                                   0      0   100%
+src\core\utils\constants.py                                 47      0   100%
+src\main.py                                                 46     46     0%   1-110
+src\repositories\__init__.py                                 0      0   100%
+src\repositories\merchant_repository.py                     18      4    78%   25, 35-37
+src\repositories\message_repository.py                      49      8    84%   51-60, 97-98, 109
+src\repositories\ticket_repository.py                       98     24    76%   69-75, 87-99, 149-165, 224
+src\services\__init__.py                                     0      0   100%
+src\services\message_service.py                             38      5    87%   42, 62, 65, 70, 76
+src\services\support_ticket_service.py                      60      2    97%   64, 66
+src\services\ticket_service.py                              84     50    40%   53-60, 85-130, 142-180, 203
+--------------------------------------------------------------------------------------
+TOTAL                                                      839    162    81%
+
+67 passed, 301 warnings in 16.88s
