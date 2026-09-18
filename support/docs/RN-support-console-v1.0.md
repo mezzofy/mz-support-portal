@@ -30,10 +30,10 @@ The Support-Staff Console is a **new module** giving Mezzofy support agents a **
 
 ## Bug Fixes
 
-- **BUG-1 (LOW, Frontend, fixed at Gate 4):** `support-graphql.datasource.ts` error-code classification checked `'INVALID_TRANSITION'` — corrected to the backend's `'INVALID_STATUS_TRANSITION'`.
-- **BUG-2 (LOW, Frontend, fixed at Gate 4):** same file checked `'NOT_FOUND'` — corrected to `'TICKET_NOT_FOUND'`.
+- **BUG-1 (LOW, Frontend, FIXED + COMMITTED):** `support-graphql.datasource.ts` error-code classification checked `'INVALID_TRANSITION'` — corrected to the backend's `'INVALID_STATUS_TRANSITION'`.
+- **BUG-2 (LOW, Frontend, FIXED + COMMITTED):** same file checked `'NOT_FOUND'` — corrected to `'TICKET_NOT_FOUND'`.
 
-> Both were surfaced at Gate 3 as one-line datasource fixes. They are **LOW** severity (view-models branch on `error.message`, so end-user UX was already correct; only `.code` was mislabeled → a dead branch). The corrections are applied in the `web-support` working tree and are **Frontend's to commit** before deploy; Tester left `it.fails` guards that flip green once committed. (Docs agent scope is docs-only and does not commit `src`.)
+> Both were surfaced at Gate 3 as one-line datasource fixes. They are **LOW** severity (view-models branch on `error.message`, so end-user UX was already correct; only `.code` was mislabeled → a dead branch). **Fixed and committed as `00e5d1c`** (web-support 105/105 green; Tester's `it.fails` guards flipped to passing).
 
 ## Breaking Changes
 
@@ -80,8 +80,6 @@ This set (all in `support/docs/`): `RS-support-console-v1.0.md`, `TD-support-con
 2. **Cross-service render** — confirm a SUPPORT reply **visibly appears** on the merchant `web-tickets` view (only the enabling mechanism — byte-compatible item under the ticket's merchant — was verified, not the rendered merchant view).
 3. **Staff REST / OTP / SQS HTTP flow** end-to-end (`/iam/api/staff/*`, OTP email, SQS) — Gate 3 tested the AuthService primitives, not the HTTP/TestClient path.
 
-**Pre-deploy blocker:** BUG-1/BUG-2 datasource fixes must be **committed** by Frontend (green `it.fails` guards) before ship.
-
 ## Known Issues
 
 - **Pre-existing svc-iam test breakage (NOT this CR):** the svc-iam repo has 2 test-collection ImportErrors (stale merchant GraphQL modules) + 3 pre-existing failures (`password_service` ×2, dual-table), env-driven (bcrypt/pydantic pin vs Python 3.13). Not caused by and does not block this CR — confirm on an EC2-parity interpreter and file separately.
@@ -100,5 +98,5 @@ This set (all in `support/docs/`): `RS-support-console-v1.0.md`, `TD-support-con
 
 | Role | Name | Status |
 |------|------|--------|
-| Lead Agent | — | ⏳ Pending |
-| QA / Tester | — | ⏳ Pending |
+| Lead Agent | Lead | ✅ APPROVED — 2026-09-19 (Gate 4) |
+| QA / Tester | — | ⏳ Pending (Gate-3 suites green; formal QA sign-off + staging residuals outstanding) |
