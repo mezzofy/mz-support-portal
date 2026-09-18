@@ -238,10 +238,10 @@ export class SupportGraphQLDatasource {
       if (code === 'FORBIDDEN' || code === 'PERMISSION_DENIED') {
         throw AppError.forbidden(first.message)
       }
-      if (code === 'NOT_FOUND') {
+      if (code === 'TICKET_NOT_FOUND') {
         throw new AppError(ErrorCode.NOT_FOUND, first.message)
       }
-      if (code === 'INVALID_TRANSITION' || code === 'VALIDATION_ERROR') {
+      if (code === 'INVALID_STATUS_TRANSITION' || code === 'VALIDATION_ERROR') {
         throw AppError.validation(first.message, { code })
       }
       throw AppError.graphql(first.message, { code })

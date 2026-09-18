@@ -200,15 +200,11 @@ describe('SupportGraphQLDatasource — error mapping', () => {
     expect(err.details?.code).toBe('INVALID_STATUS_TRANSITION')
   })
 
-  // --- BUG-1: transition errors are NOT classified as validation errors ---
-  // The datasource branches on 'INVALID_TRANSITION' but the backend sends
-  // 'INVALID_STATUS_TRANSITION', so the branch is dead and the error is
-  // classified as a generic GRAPHQL_ERROR. Expected (contract intent): a
-  // transition failure should map to a validation-class ErrorCode. Marked
-  // it.fails so the suite stays green while documenting the defect; when the
-  // source is fixed this test will start failing and must lose `.fails`.
-  it.fails(
-    'BUG: INVALID_STATUS_TRANSITION should map to a validation ErrorCode (currently GRAPHQL_ERROR)',
+  // --- BUG-1 (fixed): transition errors classify as validation errors ---
+  // The backend emits code=INVALID_STATUS_TRANSITION (frozen handoff §68); the
+  // datasource maps it to a validation-class ErrorCode. Regression guard.
+  it(
+    'INVALID_STATUS_TRANSITION maps to a validation ErrorCode',
     async () => {
       mockFetch({
         body: {
@@ -222,12 +218,11 @@ describe('SupportGraphQLDatasource — error mapping', () => {
     },
   )
 
-  // --- BUG-2: not-found is NOT classified as NOT_FOUND ---
-  // The datasource branches on 'NOT_FOUND' but the backend sends
-  // 'TICKET_NOT_FOUND' (frozen handoff §68), so a missing ticket surfaces as
-  // a generic GRAPHQL_ERROR rather than ErrorCode.NOT_FOUND.
-  it.fails(
-    'BUG: TICKET_NOT_FOUND should map to ErrorCode.NOT_FOUND (currently GRAPHQL_ERROR)',
+  // --- BUG-2 (fixed): not-found classifies as NOT_FOUND ---
+  // The backend emits code=TICKET_NOT_FOUND (frozen handoff §68); the
+  // datasource maps it to ErrorCode.NOT_FOUND. Regression guard.
+  it(
+    'TICKET_NOT_FOUND maps to ErrorCode.NOT_FOUND',
     async () => {
       mockFetch({
         body: { errors: [{ message: 'gone', extensions: { code: 'TICKET_NOT_FOUND' } }] },
@@ -237,12 +232,12 @@ describe('SupportGraphQLDatasource — error mapping', () => {
     },
   )
 
-  it('documents ACTUAL behaviour: TICKET_NOT_FOUND currently -> GRAPHQL_ERROR', async () => {
+  it('TICKET_NOT_FOUND -> NOT_FOUND and preserves the server message', async () => {
     mockFetch({
       body: { errors: [{ message: 'gone', extensions: { code: 'TICKET_NOT_FOUND' } }] },
     })
     const err = await ds.getSupportTicket('TCK-404').catch((e) => e as AppError)
-    expect(err.code).toBe(ErrorCode.GRAPHQL_ERROR)
-    expect(err.details?.code).toBe('TICKET_NOT_FOUND')
+    expect(err.code).toBe(ErrorCode.NOT_FOUND)
+    expect(err.message).toBe('gone')
   })
 })
