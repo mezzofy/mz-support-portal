@@ -1,0 +1,139 @@
+{
+  "support": {
+    "common": {
+      "loading": "加载中...",
+      "cancel": "取消",
+      "saving": "保存中...",
+      "dismiss": "忽略"
+    },
+    "auth": {
+      "verifying": "正在验证员工会话..."
+    },
+    "nav": {
+      "queue": "工单队列",
+      "myAssigned": "我的工单"
+    },
+    "header": {
+      "toggleMenu": "切换菜单",
+      "toggleSidebar": "切换侧边栏",
+      "agent": "客服",
+      "team": "团队",
+      "signOut": "退出登录",
+      "close": "关闭"
+    },
+    "sidebar": {
+      "expand": "展开侧边栏",
+      "collapse": "收起侧边栏"
+    },
+    "footer": {
+      "version": "版本"
+    },
+    "language": {
+      "select": "选择语言"
+    },
+    "queue": {
+      "title": "支持队列",
+      "totalCount": "个工单（所有商户）",
+      "searchPlaceholder": "按工单编号、主题或商户搜索...",
+      "noTickets": "未找到工单"
+    },
+    "myAssigned": {
+      "title": "分配给我的工单",
+      "totalCount": "个分配给你的工单"
+    },
+    "filters": {
+      "status": "状态",
+      "type": "类型",
+      "priority": "优先级",
+      "all": "全部",
+      "merchant": "商户",
+      "merchantPlaceholder": "按商户编号筛选...",
+      "assignee": "处理人",
+      "assigneePlaceholder": "处理人编号...",
+      "unassignedOnly": "仅未分配",
+      "clear": "清除筛选"
+    },
+    "status": {
+      "OPEN": "待处理",
+      "IN_PROGRESS": "处理中",
+      "PENDING_USER": "等待用户",
+      "PENDING_MERCHANT": "等待商户",
+      "RESOLVED": "已解决",
+      "CLOSED": "已关闭",
+      "CANCELLED": "已取消"
+    },
+    "type": {
+      "TECHNICAL": "技术",
+      "BILLING": "账单",
+      "ACCOUNT": "账户",
+      "FEATURE": "功能请求",
+      "GENERAL": "一般",
+      "OTHER": "其他"
+    },
+    "priority": {
+      "LOW": "低",
+      "MEDIUM": "中",
+      "HIGH": "高",
+      "URGENT": "紧急"
+    },
+    "table": {
+      "ticketId": "工单编号",
+      "subject": "主题",
+      "merchant": "商户",
+      "type": "类型",
+      "status": "状态",
+      "priority": "优先级",
+      "assignee": "处理人",
+      "updatedAt": "更新时间",
+      "unassigned": "未分配",
+      "openTicket": "打开工单 {{id}}"
+    },
+    "pagination": {
+      "showing": "显示",
+      "of": "共",
+      "items": "条",
+      "itemsPerPage": "每页",
+      "previous": "上一页",
+      "next": "下一页"
+    },
+    "detail": {
+      "back": "返回列表",
+      "changeStatus": "更改状态",
+      "terminalStatus": "此状态无法再转换。",
+      "moveTo": "转到",
+      "reopen": "重新打开",
+      "attachments": "附件",
+      "merchantIdentity": "商户信息",
+      "merchant": "商户",
+      "merchantId": "商户编号",
+      "raisedBy": "提交人",
+      "assignment": "分配",
+      "assign": "分配",
+      "timeline": "时间线",
+      "created": "创建时间",
+      "assignedAt": "分配时间",
+      "updatedAt": "最后更新",
+      "closedAt": "关闭时间"
+    },
+    "assign": {
+      "title": "分配工单",
+      "toMe": "分配给我",
+      "toOther": "其他客服",
+      "agentId": "客服编号",
+      "agentName": "客服姓名",
+      "team": "团队",
+      "confirm": "分配"
+    },
+    "chat": {
+      "title": "对话",
+      "empty": "暂无消息，请在下方开始对话。",
+      "senderSupport": "支持",
+      "senderUser": "商户",
+      "senderSystem": "系统",
+      "placeholder": "输入回复商户的内容...",
+      "disabledPlaceholder": "此工单已关闭，无法回复。",
+      "send": "发送",
+      "replyHint": "回复将以“支持”身份发送。按 Enter 发送，Shift+Enter 换行。"
+    }
+  }
+}

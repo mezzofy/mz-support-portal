@@ -1,0 +1,139 @@
+{
+  "support": {
+    "common": {
+      "loading": "載入中...",
+      "cancel": "取消",
+      "saving": "儲存中...",
+      "dismiss": "忽略"
+    },
+    "auth": {
+      "verifying": "正在驗證員工工作階段..."
+    },
+    "nav": {
+      "queue": "工單佇列",
+      "myAssigned": "我的工單"
+    },
+    "header": {
+      "toggleMenu": "切換選單",
+      "toggleSidebar": "切換側邊欄",
+      "agent": "客服",
+      "team": "團隊",
+      "signOut": "登出",
+      "close": "關閉"
+    },
+    "sidebar": {
+      "expand": "展開側邊欄",
+      "collapse": "收合側邊欄"
+    },
+    "footer": {
+      "version": "版本"
+    },
+    "language": {
+      "select": "選擇語言"
+    },
+    "queue": {
+      "title": "支援佇列",
+      "totalCount": "個工單（所有商戶）",
+      "searchPlaceholder": "依工單編號、主旨或商戶搜尋...",
+      "noTickets": "找不到工單"
+    },
+    "myAssigned": {
+      "title": "指派給我的工單",
+      "totalCount": "個指派給你的工單"
+    },
+    "filters": {
+      "status": "狀態",
+      "type": "類型",
+      "priority": "優先順序",
+      "all": "全部",
+      "merchant": "商戶",
+      "merchantPlaceholder": "依商戶編號篩選...",
+      "assignee": "處理人",
+      "assigneePlaceholder": "處理人編號...",
+      "unassignedOnly": "僅未指派",
+      "clear": "清除篩選"
+    },
+    "status": {
+      "OPEN": "待處理",
+      "IN_PROGRESS": "處理中",
+      "PENDING_USER": "等待使用者",
+      "PENDING_MERCHANT": "等待商戶",
+      "RESOLVED": "已解決",
+      "CLOSED": "已關閉",
+      "CANCELLED": "已取消"
+    },
+    "type": {
+      "TECHNICAL": "技術",
+      "BILLING": "帳單",
+      "ACCOUNT": "帳戶",
+      "FEATURE": "功能需求",
+      "GENERAL": "一般",
+      "OTHER": "其他"
+    },
+    "priority": {
+      "LOW": "低",
+      "MEDIUM": "中",
+      "HIGH": "高",
+      "URGENT": "緊急"
+    },
+    "table": {
+      "ticketId": "工單編號",
+      "subject": "主旨",
+      "merchant": "商戶",
+      "type": "類型",
+      "status": "狀態",
+      "priority": "優先順序",
+      "assignee": "處理人",
+      "updatedAt": "更新時間",
+      "unassigned": "未指派",
+      "openTicket": "開啟工單 {{id}}"
+    },
+    "pagination": {
+      "showing": "顯示",
+      "of": "共",
+      "items": "筆",
+      "itemsPerPage": "每頁",
+      "previous": "上一頁",
+      "next": "下一頁"
+    },
+    "detail": {
+      "back": "返回列表",
+      "changeStatus": "變更狀態",
+      "terminalStatus": "此狀態無法再轉換。",
+      "moveTo": "轉至",
+      "reopen": "重新開啟",
+      "attachments": "附件",
+      "merchantIdentity": "商戶資訊",
+      "merchant": "商戶",
+      "merchantId": "商戶編號",
+      "raisedBy": "提交人",
+      "assignment": "指派",
+      "assign": "指派",
+      "timeline": "時間軸",
+      "created": "建立時間",
+      "assignedAt": "指派時間",
+      "updatedAt": "最後更新",
+      "closedAt": "關閉時間"
+    },
+    "assign": {
+      "title": "指派工單",
+      "toMe": "指派給我",
+      "toOther": "其他客服",
+      "agentId": "客服編號",
+      "agentName": "客服姓名",
+      "team": "團隊",
+      "confirm": "指派"
+    },
+    "chat": {
+      "title": "對話",
+      "empty": "尚無訊息，請於下方開始對話。",
+      "senderSupport": "支援",
+      "senderUser": "商戶",
+      "senderSystem": "系統",
+      "placeholder": "輸入回覆商戶的內容...",
+      "disabledPlaceholder": "此工單已關閉，無法回覆。",
+      "send": "傳送",
+      "replyHint": "回覆將以「支援」身分傳送。按 Enter 傳送，Shift+Enter 換行。"
+    }
+  }
+}

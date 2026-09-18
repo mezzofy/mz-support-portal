@@ -1,0 +1,139 @@
+{
+  "support": {
+    "common": {
+      "loading": "Loading...",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "dismiss": "Dismiss"
+    },
+    "auth": {
+      "verifying": "Verifying staff session..."
+    },
+    "nav": {
+      "queue": "Queue",
+      "myAssigned": "My Assigned"
+    },
+    "header": {
+      "toggleMenu": "Toggle menu",
+      "toggleSidebar": "Toggle sidebar",
+      "agent": "Agent",
+      "team": "Team",
+      "signOut": "Sign Out",
+      "close": "Close"
+    },
+    "sidebar": {
+      "expand": "Expand sidebar",
+      "collapse": "Collapse sidebar"
+    },
+    "footer": {
+      "version": "Version"
+    },
+    "language": {
+      "select": "Select language"
+    },
+    "queue": {
+      "title": "Support Queue",
+      "totalCount": "tickets across all merchants",
+      "searchPlaceholder": "Search by ticket ID, subject or merchant...",
+      "noTickets": "No tickets found"
+    },
+    "myAssigned": {
+      "title": "My Assigned Tickets",
+      "totalCount": "tickets assigned to you"
+    },
+    "filters": {
+      "status": "Status",
+      "type": "Type",
+      "priority": "Priority",
+      "all": "All",
+      "merchant": "Merchant",
+      "merchantPlaceholder": "Filter by merchant ID...",
+      "assignee": "Assignee",
+      "assigneePlaceholder": "Assignee ID...",
+      "unassignedOnly": "Unassigned only",
+      "clear": "Clear Filters"
+    },
+    "status": {
+      "OPEN": "Open",
+      "IN_PROGRESS": "In Progress",
+      "PENDING_USER": "Pending User",
+      "PENDING_MERCHANT": "Pending Merchant",
+      "RESOLVED": "Resolved",
+      "CLOSED": "Closed",
+      "CANCELLED": "Cancelled"
+    },
+    "type": {
+      "TECHNICAL": "Technical",
+      "BILLING": "Billing",
+      "ACCOUNT": "Account",
+      "FEATURE": "Feature Request",
+      "GENERAL": "General",
+      "OTHER": "Other"
+    },
+    "priority": {
+      "LOW": "Low",
+      "MEDIUM": "Medium",
+      "HIGH": "High",
+      "URGENT": "Urgent"
+    },
+    "table": {
+      "ticketId": "Ticket ID",
+      "subject": "Subject",
+      "merchant": "Merchant",
+      "type": "Type",
+      "status": "Status",
+      "priority": "Priority",
+      "assignee": "Assignee",
+      "updatedAt": "Updated",
+      "unassigned": "Unassigned",
+      "openTicket": "Open ticket {{id}}"
+    },
+    "pagination": {
+      "showing": "Showing",
+      "of": "of",
+      "items": "items",
+      "itemsPerPage": "per page",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "detail": {
+      "back": "Back to list",
+      "changeStatus": "Change Status",
+      "terminalStatus": "No further transitions from this status.",
+      "moveTo": "Move to",
+      "reopen": "reopen",
+      "attachments": "Attachments",
+      "merchantIdentity": "Merchant Identity",
+      "merchant": "Merchant",
+      "merchantId": "Merchant ID",
+      "raisedBy": "Raised by",
+      "assignment": "Assignment",
+      "assign": "Assign",
+      "timeline": "Timeline",
+      "created": "Created",
+      "assignedAt": "Assigned",
+      "updatedAt": "Last Updated",
+      "closedAt": "Closed"
+    },
+    "assign": {
+      "title": "Assign Ticket",
+      "toMe": "Assign to me",
+      "toOther": "Another agent",
+      "agentId": "Agent ID",
+      "agentName": "Agent Name",
+      "team": "Team",
+      "confirm": "Assign"
+    },
+    "chat": {
+      "title": "Conversation",
+      "empty": "No messages yet. Start the conversation below.",
+      "senderSupport": "Support",
+      "senderUser": "Merchant",
+      "senderSystem": "System",
+      "placeholder": "Type a reply to the merchant...",
+      "disabledPlaceholder": "This ticket is closed — replies are disabled.",
+      "send": "Send",
+      "replyHint": "Replies are sent as Support. Press Enter to send, Shift+Enter for a new line."
+    }
+  }
+}
