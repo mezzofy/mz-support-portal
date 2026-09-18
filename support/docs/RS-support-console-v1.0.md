@@ -13,7 +13,7 @@ Mezzofy's Tickets module is **merchant-only**: merchants raise/track tickets and
 
 ## 2. Scope (in)
 
-A **new module** (`svc-support` + `web-support`, standalone repo `mz-support-portal-v3`) that lets an authenticated **support-staff** agent:
+A **new module** (`svc-support` + `web-support`, standalone repo `mz-support-portal`) that lets an authenticated **support-staff** agent:
 
 | # | Capability | Notes |
 |---|-----------|-------|

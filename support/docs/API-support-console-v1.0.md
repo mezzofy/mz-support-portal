@@ -1,6 +1,6 @@
 # API — Support-Staff Console (`svc-support` GraphQL) v1.0
 
-**Module:** CR-support-console-v1.0 · **Service:** `svc-support` · **Repo:** `mz-support-portal-v3`
+**Module:** CR-support-console-v1.0 · **Service:** `svc-support` · **Repo:** `mz-support-portal`
 **Status:** Implemented (Gate 3 PASS 2026-09-19) · **Contract:** FROZEN at Gate 1 (2026-09-18), built exactly as frozen
 **Date:** 2026-09-19 · **Author:** Docs Agent
 **Source of truth:** `handoffs/backend-to-frontend.md` (implemented SDL) · `handoffs/backend-to-lead-support-staff-auth-design.md` (frozen §4)

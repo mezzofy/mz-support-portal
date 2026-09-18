@@ -1,5 +1,5 @@
 
-[7m[1m[36m RUN [39m[22m[27m [36mv1.6.1[39m [90mC:/Mezzofy/workspace/mz-support-portal-v3/support/web-support[39m
+[7m[1m[36m RUN [39m[22m[27m [36mv1.6.1[39m [90mC:/Mezzofy/workspace/mz-support-portal/support/web-support[39m
 [2m      Coverage enabled with [22m[33mv8[39m
 
  [32m✓[39m tests/unit/i18n.test.ts [2m ([22m[2m5 tests[22m[2m)[22m[90m 7[2mms[22m[39m
@@ -18,7 +18,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -31,7 +31,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/assign-agent-dialog.test.tsx[2m > [22m[2mAssignAgentDialog[2m > [22m[2massigns to another agent by manual id in "other" mode[22m[39m
 Warning: An update to AssignAgentDialog inside a test was not wrapped in act(...).
@@ -44,7 +44,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
+    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -57,7 +57,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -70,7 +70,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -83,7 +83,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -96,7 +96,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -109,7 +109,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -122,7 +122,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/assign-agent-dialog.test.tsx[2m > [22m[2mAssignAgentDialog[2m > [22m[2massigns to another agent by manual id in "other" mode[22m[39m
 Warning: An update to AssignAgentDialog inside a test was not wrapped in act(...).
@@ -135,7 +135,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
+    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -148,7 +148,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -161,7 +161,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/assign-agent-dialog.test.tsx[2m > [22m[2mAssignAgentDialog[2m > [22m[2massigns to another agent by manual id in "other" mode[22m[39m
 Warning: An update to AssignAgentDialog inside a test was not wrapped in act(...).
@@ -174,7 +174,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
+    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -187,7 +187,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -200,7 +200,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/assign-agent-dialog.test.tsx[2m > [22m[2mAssignAgentDialog[2m > [22m[2massigns to another agent by manual id in "other" mode[22m[39m
 Warning: An update to AssignAgentDialog inside a test was not wrapped in act(...).
@@ -213,7 +213,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
+    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
 
 [90mstderr[2m | tests/components/assign-agent-dialog.test.tsx[2m > [22m[2mAssignAgentDialog[2m > [22m[2massigns to another agent by manual id in "other" mode[22m[39m
 Warning: An update to AssignAgentDialog inside a test was not wrapped in act(...).
@@ -226,7 +226,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
+    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -239,7 +239,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -252,7 +252,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/assign-agent-dialog.test.tsx[2m > [22m[2mAssignAgentDialog[2m > [22m[2massigns to another agent by manual id in "other" mode[22m[39m
 Warning: An update to AssignAgentDialog inside a test was not wrapped in act(...).
@@ -265,7 +265,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
+    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -278,7 +278,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -291,7 +291,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -304,7 +304,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/assign-agent-dialog.test.tsx[2m > [22m[2mAssignAgentDialog[2m > [22m[2mdisables confirm in "other" mode until an agent id is entered[22m[39m
 Warning: An update to AssignAgentDialog inside a test was not wrapped in act(...).
@@ -317,7 +317,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
+    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mdoes not clear the composer when send fails[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -330,7 +330,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mdoes not clear the composer when send fails[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -343,7 +343,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mdoes not clear the composer when send fails[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -356,7 +356,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mdoes not clear the composer when send fails[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -369,7 +369,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mdoes not clear the composer when send fails[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -382,7 +382,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
  [32m✓[39m tests/components/assign-agent-dialog.test.tsx [2m ([22m[2m7 tests[22m[2m)[22m[33m 1142[2mms[22m[39m
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mdoes not clear the composer when send fails[22m[39m
@@ -396,7 +396,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mdoes not clear the composer when send fails[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -409,7 +409,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mdoes not clear the composer when send fails[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -422,7 +422,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mdoes not clear the composer when send fails[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -435,7 +435,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mkeeps send disabled for whitespace-only drafts[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -448,7 +448,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mkeeps send disabled for whitespace-only drafts[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -461,7 +461,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
 [90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mkeeps send disabled for whitespace-only drafts[22m[39m
 Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
@@ -474,7 +474,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
 
  [32m✓[39m tests/components/support-chat-panel.test.tsx [2m ([22m[2m9 tests[22m[2m)[22m[33m 1389[2mms[22m[39m
  [32m✓[39m tests/unit/use-debounce.test.ts [2m ([22m[2m3 tests[22m[2m)[22m[90m 36[2mms[22m[39m
@@ -490,7 +490,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
+    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
 
 [90mstderr[2m | tests/components/status-transition-menu.test.tsx[2m > [22m[2mStatusTransitionMenu[2m > [22m[2moffers exactly the allowed targets for IN_PROGRESS[22m[39m
 Warning: An update to StatusTransitionMenu inside a test was not wrapped in act(...).
@@ -503,7 +503,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
+    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
 
 [90mstderr[2m | tests/components/status-transition-menu.test.tsx[2m > [22m[2mStatusTransitionMenu[2m > [22m[2moffers exactly the allowed targets for PENDING_USER[22m[39m
 Warning: An update to StatusTransitionMenu inside a test was not wrapped in act(...).
@@ -516,7 +516,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
+    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
 
 [90mstderr[2m | tests/components/status-transition-menu.test.tsx[2m > [22m[2mStatusTransitionMenu[2m > [22m[2moffers exactly the allowed targets for PENDING_MERCHANT[22m[39m
 Warning: An update to StatusTransitionMenu inside a test was not wrapped in act(...).
@@ -529,7 +529,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
+    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
 
 [90mstderr[2m | tests/components/status-transition-menu.test.tsx[2m > [22m[2mStatusTransitionMenu[2m > [22m[2moffers exactly the allowed targets for RESOLVED[22m[39m
 Warning: An update to StatusTransitionMenu inside a test was not wrapped in act(...).
@@ -542,7 +542,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
+    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
 
 [90mstderr[2m | tests/components/status-transition-menu.test.tsx[2m > [22m[2mStatusTransitionMenu[2m > [22m[2mcalls onSelect with the chosen target and closes the menu[22m[39m
 Warning: An update to StatusTransitionMenu inside a test was not wrapped in act(...).
@@ -555,7 +555,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
+    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
 
 [90mstderr[2m | tests/components/status-transition-menu.test.tsx[2m > [22m[2mStatusTransitionMenu[2m > [22m[2mcalls onSelect with the chosen target and closes the menu[22m[39m
 Warning: An update to StatusTransitionMenu inside a test was not wrapped in act(...).
@@ -568,7 +568,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
+    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
 
 [90mstderr[2m | tests/components/status-transition-menu.test.tsx[2m > [22m[2mStatusTransitionMenu[2m > [22m[2mshows the reopen hint on RESOLVED -> IN_PROGRESS[22m[39m
 Warning: An update to StatusTransitionMenu inside a test was not wrapped in act(...).
@@ -581,7 +581,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
+    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
 
  [32m✓[39m tests/components/status-transition-menu.test.tsx [2m ([22m[2m10 tests[22m[2m)[22m[33m 528[2mms[22m[39m
 

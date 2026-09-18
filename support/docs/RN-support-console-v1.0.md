@@ -1,6 +1,6 @@
 # RN — Support-Staff Console v1.0 ⭐ RELEASE NOTES
 
-**Module:** CR-support-console-v1.0 · **Repo:** `mz-support-portal-v3` · **Version:** v1.0.0
+**Module:** CR-support-console-v1.0 · **Repo:** `mz-support-portal` · **Version:** v1.0.0
 **Date:** 2026-09-19 · **Author:** Docs Agent · **Status:** Pre-deploy (Gate 4 — approvals pending)
 **Workflow:** new-module · **Priority:** P2
 **Docs:** `RS/TD/API/DB-delta/ADR-004-support-console-v1.0`

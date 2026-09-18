@@ -1,7 +1,7 @@
 # Test Report — web-support (CR-support-console-v1.0, Gate 3)
 
 **Agent:** Tester (frontend) · **Date:** 2026-09-19
-**Target:** `mz-support-portal-v3/support/web-support` (React + TS + Vite, Clean-Arch/MVVM, Zustand, InversifyJS)
+**Target:** `mz-support-portal/support/web-support` (React + TS + Vite, Clean-Arch/MVVM, Zustand, InversifyJS)
 **Runner:** Vitest 1.6.1 · jsdom · @testing-library/react 14 · @vitest/coverage-v8
 **Constraint honoured:** test files + vitest config only. **No production `src/` file was modified.** Two source defects were found; failing tests document them (see BUGS) — they were **not** fixed.
 
@@ -9,7 +9,7 @@
 
 ## How to run
 ```bash
-cd mz-support-portal-v3/support/web-support
+cd mz-support-portal/support/web-support
 npm i -D vitest@^1.6.0 @vitest/coverage-v8@^1.6.0 jsdom@^24.1.0 \
          @testing-library/react@^14.3.1 @testing-library/user-event@^14.5.2 \
          @testing-library/jest-dom@^6.4.6   # (already installed)

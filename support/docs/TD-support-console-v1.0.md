@@ -1,6 +1,6 @@
 # TD — Support-Staff Console (Technical Design) v1.0
 
-**Module:** CR-support-console-v1.0 · **Repo:** `mz-support-portal-v3` (NEW standalone)
+**Module:** CR-support-console-v1.0 · **Repo:** `mz-support-portal` (NEW standalone)
 **Status:** Implemented (Gate 3 PASS 2026-09-19) · **Date:** 2026-09-19 · **Author:** Docs Agent
 **Companion:** `API-support-console-v1.0.md` · `DB-support-console-delta-v1.0.md` · `ADR-004-support-service-boundary-v1.0.md`
 **Cross-ref:** merchant ticketing `TD-tickets-v2.0.md`, `ADR-001..003` (this module reuses those patterns unchanged)
@@ -14,7 +14,7 @@ Give Mezzofy support staff an agent-facing console to work tickets **across all 
 ## 2. Component overview
 
 ```
-mz-support-portal-v3/
+mz-support-portal/
 └── support/
     ├── svc-support/            # NEW FastAPI + Strawberry + Mangum service (port 8005)
     │   ├── src/                #   route /support, GraphQL /support/api/graphql, health /support/health

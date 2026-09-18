@@ -1,4 +1,4 @@
-# STATUS — Support-Staff Console (`mz-support-portal-v3`)
+# STATUS — Support-Staff Console (`mz-support-portal`)
 
 **Project:** CR-support-console-v1.0 · **Owner:** Lead Agent · **Last updated:** 2026-09-19
 **Phase:** ✅ **Build-complete (all 5 quality gates PASS) — awaiting staging + production deploy (human + Infra gated)**

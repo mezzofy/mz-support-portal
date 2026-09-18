@@ -18,7 +18,7 @@ We needed to decide (a) **where the cross-merchant logic lives** and (b) **how s
 
 ## Decision
 
-**(A) A NEW standalone `svc-support` service** — not an extension of the merchant `svc-tickets`. It reads/writes the **same** `mz-platform-dev` table with the **identical** `TICKET#` / `MESSAGE#` item layout, **vendoring** the small shared ticket domain from `svc-tickets` **unchanged**, so writes stay byte-compatible with the merchant view. It does **not** call the merchant GraphQL API (that API mandates `merchantId` + self-filters). Hosted in a **new standalone repo** `mz-support-portal-v3`, kept off the merchant/admin gateways.
+**(A) A NEW standalone `svc-support` service** — not an extension of the merchant `svc-tickets`. It reads/writes the **same** `mz-platform-dev` table with the **identical** `TICKET#` / `MESSAGE#` item layout, **vendoring** the small shared ticket domain from `svc-tickets` **unchanged**, so writes stay byte-compatible with the merchant view. It does **not** call the merchant GraphQL API (that API mandates `merchantId` + self-filters). Hosted in a **new standalone repo** `mz-support-portal`, kept off the merchant/admin gateways.
 
 **(B) A NEW svc-iam staff-session type** — a `sessionType` **discriminator** on the session item, with a **`merchantId`-less** staff session (`sessionType=STAFF`, `staffTeam`, `SUPPORT_TICKETS` permission), minted by a new `create_staff_session()` path — rather than reusing/bending merchant auth. svc-support owns its own auth boundary (`resolve_agent_context`), gating on `sessionType==STAFF` + the `SUPPORT_TICKETS` permission.
 

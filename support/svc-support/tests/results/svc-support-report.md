@@ -1,6 +1,6 @@
 # Test Report — svc-support (CR-support-console-v1.0, Gate 3)
 
-**Agent:** Tester (backend) · **Date:** 2026-09-19 · **Repo:** `mz-support-portal-v3/support/svc-support`
+**Agent:** Tester (backend) · **Date:** 2026-09-19 · **Repo:** `mz-support-portal/support/svc-support`
 **Environment:** Windows 11, Python 3.13.14, isolated venv, **moto 5.0.0** in-memory `mz-platform-dev` (no live AWS).
 
 ## Result
