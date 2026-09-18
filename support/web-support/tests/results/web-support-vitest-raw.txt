@@ -1,0 +1,623 @@
+
+[7m[1m[36m RUN [39m[22m[27m [36mv1.6.1[39m [90mC:/Mezzofy/workspace/mz-support-portal-v3/support/web-support[39m
+[2m      Coverage enabled with [22m[33mv8[39m
+
+ [32m✓[39m tests/unit/i18n.test.ts [2m ([22m[2m5 tests[22m[2m)[22m[90m 7[2mms[22m[39m
+ [32m✓[39m tests/unit/datasource.test.ts [2m ([22m[2m17 tests[22m[2m)[22m[90m 42[2mms[22m[39m
+ [32m✓[39m tests/unit/mappers.test.ts [2m ([22m[2m10 tests[22m[2m)[22m[90m 19[2mms[22m[39m
+ [32m✓[39m tests/unit/ticket-detail-viewmodel.test.ts [2m ([22m[2m17 tests[22m[2m)[22m[90m 19[2mms[22m[39m
+ [32m✓[39m tests/unit/ticket-list-viewmodel.test.ts [2m ([22m[2m15 tests[22m[2m)[22m[90m 151[2mms[22m[39m
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/assign-agent-dialog.test.tsx[2m > [22m[2mAssignAgentDialog[2m > [22m[2massigns to another agent by manual id in "other" mode[22m[39m
+Warning: An update to AssignAgentDialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/assign-agent-dialog.test.tsx[2m > [22m[2mAssignAgentDialog[2m > [22m[2massigns to another agent by manual id in "other" mode[22m[39m
+Warning: An update to AssignAgentDialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/assign-agent-dialog.test.tsx[2m > [22m[2mAssignAgentDialog[2m > [22m[2massigns to another agent by manual id in "other" mode[22m[39m
+Warning: An update to AssignAgentDialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/assign-agent-dialog.test.tsx[2m > [22m[2mAssignAgentDialog[2m > [22m[2massigns to another agent by manual id in "other" mode[22m[39m
+Warning: An update to AssignAgentDialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
+
+[90mstderr[2m | tests/components/assign-agent-dialog.test.tsx[2m > [22m[2mAssignAgentDialog[2m > [22m[2massigns to another agent by manual id in "other" mode[22m[39m
+Warning: An update to AssignAgentDialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/assign-agent-dialog.test.tsx[2m > [22m[2mAssignAgentDialog[2m > [22m[2massigns to another agent by manual id in "other" mode[22m[39m
+Warning: An update to AssignAgentDialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2msends a reply and clears the composer on success[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/assign-agent-dialog.test.tsx[2m > [22m[2mAssignAgentDialog[2m > [22m[2mdisables confirm in "other" mode until an agent id is entered[22m[39m
+Warning: An update to AssignAgentDialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at AssignAgentDialog (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\AssignAgentDialog.tsx:13:30)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mdoes not clear the composer when send fails[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mdoes not clear the composer when send fails[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mdoes not clear the composer when send fails[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mdoes not clear the composer when send fails[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mdoes not clear the composer when send fails[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+ [32m✓[39m tests/components/assign-agent-dialog.test.tsx [2m ([22m[2m7 tests[22m[2m)[22m[33m 1142[2mms[22m[39m
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mdoes not clear the composer when send fails[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mdoes not clear the composer when send fails[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mdoes not clear the composer when send fails[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mdoes not clear the composer when send fails[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mkeeps send disabled for whitespace-only drafts[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mkeeps send disabled for whitespace-only drafts[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+[90mstderr[2m | tests/components/support-chat-panel.test.tsx[2m > [22m[2mSupportChatPanel[2m > [22m[2mkeeps send disabled for whitespace-only drafts[22m[39m
+Warning: An update to SupportChatPanel inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SupportChatPanel (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\SupportChatPanel.tsx:27:3)
+
+ [32m✓[39m tests/components/support-chat-panel.test.tsx [2m ([22m[2m9 tests[22m[2m)[22m[33m 1389[2mms[22m[39m
+ [32m✓[39m tests/unit/use-debounce.test.ts [2m ([22m[2m3 tests[22m[2m)[22m[90m 36[2mms[22m[39m
+ [32m✓[39m tests/unit/status-transitions.test.ts [2m ([22m[2m12 tests[22m[2m)[22m[90m 16[2mms[22m[39m
+[90mstderr[2m | tests/components/status-transition-menu.test.tsx[2m > [22m[2mStatusTransitionMenu[2m > [22m[2moffers exactly the allowed targets for OPEN[22m[39m
+Warning: An update to StatusTransitionMenu inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
+
+[90mstderr[2m | tests/components/status-transition-menu.test.tsx[2m > [22m[2mStatusTransitionMenu[2m > [22m[2moffers exactly the allowed targets for IN_PROGRESS[22m[39m
+Warning: An update to StatusTransitionMenu inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
+
+[90mstderr[2m | tests/components/status-transition-menu.test.tsx[2m > [22m[2mStatusTransitionMenu[2m > [22m[2moffers exactly the allowed targets for PENDING_USER[22m[39m
+Warning: An update to StatusTransitionMenu inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
+
+[90mstderr[2m | tests/components/status-transition-menu.test.tsx[2m > [22m[2mStatusTransitionMenu[2m > [22m[2moffers exactly the allowed targets for PENDING_MERCHANT[22m[39m
+Warning: An update to StatusTransitionMenu inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
+
+[90mstderr[2m | tests/components/status-transition-menu.test.tsx[2m > [22m[2mStatusTransitionMenu[2m > [22m[2moffers exactly the allowed targets for RESOLVED[22m[39m
+Warning: An update to StatusTransitionMenu inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
+
+[90mstderr[2m | tests/components/status-transition-menu.test.tsx[2m > [22m[2mStatusTransitionMenu[2m > [22m[2mcalls onSelect with the chosen target and closes the menu[22m[39m
+Warning: An update to StatusTransitionMenu inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
+
+[90mstderr[2m | tests/components/status-transition-menu.test.tsx[2m > [22m[2mStatusTransitionMenu[2m > [22m[2mcalls onSelect with the chosen target and closes the menu[22m[39m
+Warning: An update to StatusTransitionMenu inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
+
+[90mstderr[2m | tests/components/status-transition-menu.test.tsx[2m > [22m[2mStatusTransitionMenu[2m > [22m[2mshows the reopen hint on RESOLVED -> IN_PROGRESS[22m[39m
+Warning: An update to StatusTransitionMenu inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at StatusTransitionMenu (C:\Mezzofy\workspace\mz-support-portal-v3\support\web-support\src\presentation\features\support\components\StatusTransitionMenu.tsx:11:33)
+
+ [32m✓[39m tests/components/status-transition-menu.test.tsx [2m ([22m[2m10 tests[22m[2m)[22m[33m 528[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m10 passed[39m[22m[90m (10)[39m
+[2m      Tests [22m [1m[32m105 passed[39m[22m[90m (105)[39m
+[2m   Start at [22m 00:09:14
+[2m   Duration [22m 6.69s[2m (transform 1.03s, setup 9.10s, collect 2.33s, tests 3.35s, environment 14.16s, prepare 3.59s)[22m
+
+[34m % [39m[2mCoverage report from [22m[33mv8[39m
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   96.31 |    86.69 |   92.15 |   96.31 |                   
+ data/datasources  |   97.81 |    87.17 |     100 |   97.81 |                   
+  ...datasource.ts |   97.81 |    87.17 |     100 |   97.81 | ...43,251-252,284 
+ data/mappers      |     100 |      100 |     100 |     100 |                   
+  ...ket.mapper.ts |     100 |      100 |     100 |     100 |                   
+ domain/entities   |     100 |      100 |     100 |     100 |                   
+  ...age.entity.ts |     100 |      100 |     100 |     100 |                   
+  ...ket.entity.ts |     100 |      100 |     100 |     100 |                   
+ ...ort/components |   94.45 |    83.75 |      75 |   94.45 |                   
+  ...entDialog.tsx |     100 |    87.09 |   57.14 |     100 | 38-51             
+  ...itionMenu.tsx |     100 |     92.3 |      75 |     100 | 24                
+  ...ChatPanel.tsx |   86.74 |    77.77 |     100 |   86.74 | ...21-137,155-157 
+ .../support/hooks |     100 |      100 |     100 |     100 |                   
+  useDebounce.ts   |     100 |      100 |     100 |     100 |                   
+ ...ort/viewmodels |   95.18 |    86.56 |     100 |   95.18 |                   
+  ...tViewModel.ts |     100 |    96.87 |     100 |     100 | 149               
+  ...dViewModel.ts |     100 |      100 |     100 |     100 |                   
+  ...eViewModel.ts |     100 |      100 |     100 |     100 |                   
+  ...lViewModel.ts |   89.71 |    77.14 |     100 |   89.71 | ...34-136,158-159 
+-------------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 96.31% ( 1281/1330 )
+Branches     : 86.69% ( 176/203 )
+Functions    : 92.15% ( 47/51 )
+Lines        : 96.31% ( 1281/1330 )
+================================================================================
