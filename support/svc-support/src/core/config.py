@@ -1,28 +1,35 @@
 from pydantic_settings import BaseSettings
-from typing import Optional
 
 
 class Settings(BaseSettings):
-    """Application configuration settings for the Support-Staff Console (svc-support).
+    """Application configuration for the Support-Staff Console (svc-support).
 
-    Reads/writes the SAME shared platform table (mz-platform-dev) as svc-tickets,
-    so the item layout stays byte-compatible with the merchant view.
+    Re-platformed to PostgreSQL (Option B) — reads/writes the SAME `mezzofy_ai`
+    database used by the mz-ai-assistant server (tickets/messages/merchants tables).
+    Auth reuses mz-ai-assistant JWTs (shared JWT_SECRET); no DynamoDB, no svc-iam.
     """
 
     # Environment
     ENVIRONMENT: str = "development"
 
-    # DynamoDB — shared platform single-table (tickets + messages + sessions live here)
-    PLATFORM_TABLE_NAME: str = "mz-platform-dev"
-    AWS_REGION: str = "ap-southeast-1"
-    AWS_ENDPOINT_URL: Optional[str] = None  # For local DynamoDB
+    # PostgreSQL — the shared mezzofy_ai database.
+    # Accepts the mz-ai-assistant DATABASE_URL verbatim (SQLAlchemy async form);
+    # core.database normalizes it to a libpq DSN for psycopg2.
+    DATABASE_URL: str = "postgresql+asyncpg://mezzofy_ai:password@localhost:5432/mezzofy_ai"
+    DB_POOL_MIN: int = 1
+    DB_POOL_MAX: int = 10
+
+    # Auth — reuse the mz-ai-assistant JWT (Option B). JWT_SECRET MUST match the
+    # mz-ai-assistant server's value so svc-support can validate its access tokens.
+    JWT_SECRET: str = ""
+    JWT_ALGORITHM: str = "HS256"
 
     # API
     API_V1_PREFIX: str = "/support/api"
     API_TITLE: str = "Mezzofy Support Console API"
     API_VERSION: str = "1.0.0"
 
-    # Local dev port (mirrors svc-tickets' single-service serving; SPA served from public/)
+    # Local dev port (svc-support serves API + the SPA from public/)
     PORT: int = 8005
 
     # CORS — Vite dev server (5182), gateway (3030), and self

@@ -1,79 +1,111 @@
-"""Ticket repository — DynamoDB CRUD for TICKET# items in platform table (mz-platform-dev).
+"""Ticket repository — PostgreSQL CRUD for the `tickets` table (mezzofy_ai).
 
-Vendored from svc-tickets and extended for the support console with:
-  * ``list_all_cross_merchant()`` — the merchant queue read model WITHOUT the
-    per-merchant filter (GSI2 + in-memory refine, DB §8.2, fine <10K tickets).
-  * ``assign()`` — writes the sparse assignment attributes via the existing
-    dynamic ``update()`` (no schema change / no migration).
-The merchant-scoped ``list_all()`` is kept intact for byte-compatibility and
-is simply not used by the support resolvers.
+Re-platformed from DynamoDB (Option B). Public method signatures are unchanged
+so the vendored TicketService / SupportTicketService keep working as-is. The
+DynamoDB "fetch all + in-memory refine" cross-merchant path now pushes filters
+and pagination into SQL (`WHERE … ORDER BY created_at DESC LIMIT/OFFSET`).
+
+Return shape: domain dicts with camelCase keys (ticketId, merchantId, …) — the
+same contract the services + GraphQL mappers already consume. Sparse assignment
+fields (assigneeId/assigneeName/assignedTeam/assignedAt) and closedAt are OMITTED
+when NULL, mirroring the DynamoDB "absent when unset" behaviour.
 """
 import logging
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple
 
-from boto3.dynamodb.conditions import Key, Attr
+from psycopg2.extras import Json
 
-from core.database import db_client
+from core.database import get_db_client
 from core.errors import TicketNotFoundError
 from core.utils.constants import (
-    PK_TICKET, ENTITY_TICKET, GSI2_NAME, GSI2_ENTITY, SYSTEM_ATTRS,
     ATTR_ASSIGNEE_ID, ATTR_ASSIGNEE_NAME, ATTR_ASSIGNED_TEAM, ATTR_ASSIGNED_AT,
 )
 
 logger = logging.getLogger(__name__)
 
-_SYSTEM_ATTRS = SYSTEM_ATTRS
+# camelCase update key -> column. Only these columns are updatable via update().
+_UPDATABLE_COLUMNS = {
+    "status": "status",
+    "priority": "priority",
+    "type": "type",
+    "subject": "subject",
+    "description": "description",
+    "attachments": "attachments",
+    "closedAt": "closed_at",
+    ATTR_ASSIGNEE_ID: "assignee_id",
+    ATTR_ASSIGNEE_NAME: "assignee_name",
+    ATTR_ASSIGNED_TEAM: "assigned_team",
+    ATTR_ASSIGNED_AT: "assigned_at",
+}
 
 
-def _strip_system_attrs(item: Dict) -> Dict:
-    return {k: v for k, v in item.items() if k not in _SYSTEM_ATTRS}
+def _iso(value) -> Optional[str]:
+    """Render a DB datetime as an ISO8601 string (the DynamoDB contract)."""
+    if value is None:
+        return None
+    return value.isoformat() if isinstance(value, datetime) else str(value)
+
+
+def _row_to_ticket(row: Dict) -> Dict:
+    """Map a `tickets` row (snake_case) to the camelCase domain dict."""
+    ticket = {
+        "ticketId": row["ticket_id"],
+        "merchantId": row["merchant_id"],
+        "userId": row["user_id"],
+        "type": row["type"],
+        "status": row["status"],
+        "priority": row["priority"],
+        "subject": row["subject"],
+        "description": row["description"],
+        "attachments": row.get("attachments") or [],
+        "createdAt": _iso(row["created_at"]),
+        "updatedAt": _iso(row["updated_at"]),
+    }
+    if row.get("assignee_id") is not None:
+        ticket["assigneeId"] = row["assignee_id"]
+    if row.get("assignee_name") is not None:
+        ticket["assigneeName"] = row["assignee_name"]
+    if row.get("assigned_team") is not None:
+        ticket["assignedTeam"] = row["assigned_team"]
+    if row.get("assigned_at") is not None:
+        ticket["assignedAt"] = _iso(row["assigned_at"])
+    if row.get("closed_at") is not None:
+        ticket["closedAt"] = _iso(row["closed_at"])
+    return ticket
 
 
 class TicketRepository:
-    """DynamoDB CRUD for ticket items in platform table (mz-platform-dev).
-
-    Single-table layout:
-        PK: TICKET#{ticketId}
-        SK: TICKET#{ticketId}
-        entityType: TICKET
-        GSI2PK: ENTITY#TICKET
-        GSI2SK: {createdAt}#{ticketId}
-    """
+    """PostgreSQL CRUD for ticket rows in `mezzofy_ai.tickets`."""
 
     def __init__(self, merchant_id: str = ""):
         # merchant_id is optional for the support console (cross-merchant actor);
         # kept in the signature for parity with the vendored svc-tickets repo.
         self.merchant_id = merchant_id
-        self.table = db_client.get_platform_table()
 
     def get_by_id(self, ticket_id: str) -> Optional[Dict]:
         """Get a single ticket by ID."""
-        response = self.table.get_item(
-            Key={'PK': f'{PK_TICKET}{ticket_id}', 'SK': f'{PK_TICKET}{ticket_id}'}
-        )
-        item = response.get('Item')
-        if not item:
-            return None
-        return _strip_system_attrs(item)
+        with get_db_client().cursor() as cur:
+            cur.execute("SELECT * FROM tickets WHERE ticket_id = %s", (ticket_id,))
+            row = cur.fetchone()
+        return _row_to_ticket(row) if row else None
 
-    def _query_all_tickets(self) -> List[Dict]:
-        """Fetch every TICKET item via GSI2 (Scan fallback), newest-first."""
-        try:
-            response = self.table.query(
-                IndexName=GSI2_NAME,
-                KeyConditionExpression=Key('GSI2PK').eq(f'{GSI2_ENTITY}{ENTITY_TICKET}'),
-                ScanIndexForward=False,  # Newest first
+    def _paged(
+        self, where: List[str], params: List, page: int, limit: int
+    ) -> Tuple[List[Dict], int]:
+        """Run COUNT + a page SELECT for the given WHERE predicates."""
+        where_sql = (" WHERE " + " AND ".join(where)) if where else ""
+        offset = max(page - 1, 0) * limit
+        with get_db_client().cursor() as cur:
+            cur.execute(f"SELECT COUNT(*) AS c FROM tickets{where_sql}", params)
+            total = cur.fetchone()["c"]
+            cur.execute(
+                f"SELECT * FROM tickets{where_sql} "
+                f"ORDER BY created_at DESC LIMIT %s OFFSET %s",
+                params + [limit, offset],
             )
-            items = response.get('Items', [])
-        except Exception as e:
-            logger.warning(f"GSI2 query failed, falling back to Scan: {e}")
-            response = self.table.scan(
-                FilterExpression=Attr('entityType').eq(ENTITY_TICKET),
-            )
-            items = response.get('Items', [])
-            items.sort(key=lambda x: x.get('createdAt', ''), reverse=True)
-        return [_strip_system_attrs(item) for item in items]
+            rows = cur.fetchall()
+        return [_row_to_ticket(r) for r in rows], total
 
     def list_all(
         self,
@@ -84,19 +116,18 @@ class TicketRepository:
         priority_filter: Optional[str] = None,
     ) -> Tuple[List[Dict], int]:
         """Merchant-scoped listing (vendored — kept for parity, unused by support)."""
-        tickets = self._query_all_tickets()
-        tickets = [t for t in tickets if t.get('merchantId') == self.merchant_id]
-
+        where = ["merchant_id = %s"]
+        params: List = [self.merchant_id]
         if status_filter:
-            tickets = [t for t in tickets if t.get('status') == status_filter]
+            where.append("status = %s")
+            params.append(status_filter)
         if type_filter:
-            tickets = [t for t in tickets if t.get('type') == type_filter]
+            where.append("type = %s")
+            params.append(type_filter)
         if priority_filter:
-            tickets = [t for t in tickets if t.get('priority') == priority_filter]
-
-        total = len(tickets)
-        start = (page - 1) * limit
-        return tickets[start:start + limit], total
+            where.append("priority = %s")
+            params.append(priority_filter)
+        return self._paged(where, params, page, limit)
 
     def list_all_cross_merchant(
         self,
@@ -110,90 +141,93 @@ class TicketRepository:
         unassigned: Optional[bool] = None,
         search: Optional[str] = None,
     ) -> Tuple[List[Dict], int]:
-        """Cross-merchant queue: GSI2 (all tickets, newest-first) + in-memory refine.
-
-        This is ``list_all`` WITHOUT the ``merchantId`` self-filter; merchantId
-        becomes an *optional* filter instead of a hard scope. Returns
-        ``(page_items, total_matching)``.
-        """
-        tickets = self._query_all_tickets()
-
-        # Optional merchant filter (an explicit choice, not an implicit scope).
+        """Cross-merchant queue: SQL filters + pagination; returns (page_items, total_matching)."""
+        where: List[str] = []
+        params: List = []
         if merchant_id:
-            tickets = [t for t in tickets if t.get('merchantId') == merchant_id]
+            where.append("merchant_id = %s")
+            params.append(merchant_id)
         if status_filter:
-            tickets = [t for t in tickets if t.get('status') == status_filter]
+            where.append("status = %s")
+            params.append(status_filter)
         if type_filter:
-            tickets = [t for t in tickets if t.get('type') == type_filter]
+            where.append("type = %s")
+            params.append(type_filter)
         if priority_filter:
-            tickets = [t for t in tickets if t.get('priority') == priority_filter]
+            where.append("priority = %s")
+            params.append(priority_filter)
         if assignee_id:
-            tickets = [t for t in tickets if t.get('assigneeId') == assignee_id]
+            where.append("assignee_id = %s")
+            params.append(assignee_id)
         if unassigned:
-            tickets = [t for t in tickets if not t.get('assigneeId')]
+            where.append("assignee_id IS NULL")
         if search:
-            needle = search.strip().lower()
-            tickets = [
-                t for t in tickets
-                if needle in (t.get('subject', '') or '').lower()
-                or needle in (t.get('description', '') or '').lower()
-                or needle in (t.get('merchantId', '') or '').lower()
-            ]
-
-        total = len(tickets)
-        start = (page - 1) * limit
-        return tickets[start:start + limit], total
+            where.append(
+                "(subject ILIKE %s OR description ILIKE %s OR merchant_id ILIKE %s)"
+            )
+            needle = f"%{search.strip()}%"
+            params.extend([needle, needle, needle])
+        return self._paged(where, params, page, limit)
 
     def create(self, ticket_data: Dict) -> Dict:
-        """Create a new ticket item (parity with svc-tickets; unused by support)."""
-        ticket_id = ticket_data['ticketId']
-        now = datetime.now(timezone.utc).isoformat()
-
-        ticket_data.setdefault('createdAt', now)
-        ticket_data.setdefault('updatedAt', now)
-
-        item = {
-            'PK': f'{PK_TICKET}{ticket_id}',
-            'SK': f'{PK_TICKET}{ticket_id}',
-            'entityType': ENTITY_TICKET,
-            'GSI2PK': f'{GSI2_ENTITY}{ENTITY_TICKET}',
-            'GSI2SK': f'{ticket_data["createdAt"]}#{ticket_id}',
-            **ticket_data,
-        }
-
-        self.table.put_item(Item=item)
-        return ticket_data
+        """Create a new ticket row (parity with svc-tickets; unused by support)."""
+        now = datetime.now(timezone.utc)
+        with get_db_client().cursor(commit=True) as cur:
+            cur.execute(
+                """
+                INSERT INTO tickets
+                    (ticket_id, merchant_id, user_id, type, status, priority,
+                     subject, description, attachments, created_at, updated_at)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                RETURNING *
+                """,
+                (
+                    ticket_data["ticketId"],
+                    ticket_data["merchantId"],
+                    ticket_data["userId"],
+                    ticket_data["type"],
+                    ticket_data["status"],
+                    ticket_data["priority"],
+                    ticket_data["subject"],
+                    ticket_data["description"],
+                    Json(ticket_data.get("attachments") or []),
+                    now,
+                    now,
+                ),
+            )
+            row = cur.fetchone()
+        return _row_to_ticket(row)
 
     def update(self, ticket_id: str, updates: Dict) -> Dict:
-        """Update a ticket item with dynamic UpdateExpression."""
-        existing = self.get_by_id(ticket_id)
-        if not existing:
+        """Partial update; always stamps updated_at; returns the full new row.
+
+        Raises TicketNotFoundError if the ticket does not exist.
+        """
+        set_parts: List[str] = []
+        params: List = []
+        for key, value in updates.items():
+            if key == "updatedAt":
+                continue  # forced below
+            column = _UPDATABLE_COLUMNS.get(key)
+            if column is None:
+                continue  # ignore keys that are not updatable columns
+            set_parts.append(f"{column} = %s")
+            params.append(Json(value) if column == "attachments" else value)
+
+        set_parts.append("updated_at = %s")
+        params.append(datetime.now(timezone.utc))
+        params.append(ticket_id)
+
+        with get_db_client().cursor(commit=True) as cur:
+            cur.execute(
+                f"UPDATE tickets SET {', '.join(set_parts)} "
+                f"WHERE ticket_id = %s RETURNING *",
+                params,
+            )
+            row = cur.fetchone()
+        if row is None:
             raise TicketNotFoundError(ticket_id)
-
-        updates['updatedAt'] = datetime.now(timezone.utc).isoformat()
-
-        expr_parts = []
-        attr_names = {}
-        attr_values = {}
-
-        for i, (key, value) in enumerate(updates.items()):
-            safe_key = f'#k{i}'
-            safe_val = f':v{i}'
-            expr_parts.append(f'{safe_key} = {safe_val}')
-            attr_names[safe_key] = key
-            attr_values[safe_val] = value
-
-        update_expr = 'SET ' + ', '.join(expr_parts)
-
-        response = self.table.update_item(
-            Key={'PK': f'{PK_TICKET}{ticket_id}', 'SK': f'{PK_TICKET}{ticket_id}'},
-            UpdateExpression=update_expr,
-            ExpressionAttributeNames=attr_names,
-            ExpressionAttributeValues=attr_values,
-            ReturnValues='ALL_NEW',
-        )
-
-        return _strip_system_attrs(response.get('Attributes', {}))
+        return _row_to_ticket(row)
 
     def assign(
         self,
@@ -202,14 +236,9 @@ class TicketRepository:
         assignee_name: Optional[str] = None,
         assigned_team: Optional[str] = None,
     ) -> Dict:
-        """Write the sparse assignment attributes onto a ticket (no migration).
-
-        Uses the existing dynamic ``update()`` so ``assigneeId`` /
-        ``assigneeName`` / ``assignedTeam`` / ``assignedAt`` are added as plain
-        item attributes and become visible to both the support and merchant views.
-        """
+        """Write the sparse assignment attributes onto a ticket via update()."""
         now = datetime.now(timezone.utc).isoformat()
-        updates = {
+        updates: Dict = {
             ATTR_ASSIGNEE_ID: assignee_id,
             ATTR_ASSIGNED_AT: now,
         }
@@ -220,7 +249,6 @@ class TicketRepository:
         return self.update(ticket_id, updates)
 
     def delete(self, ticket_id: str) -> None:
-        """Delete a ticket item."""
-        self.table.delete_item(
-            Key={'PK': f'{PK_TICKET}{ticket_id}', 'SK': f'{PK_TICKET}{ticket_id}'}
-        )
+        """Delete a ticket row (cascades to its messages)."""
+        with get_db_client().cursor(commit=True) as cur:
+            cur.execute("DELETE FROM tickets WHERE ticket_id = %s", (ticket_id,))

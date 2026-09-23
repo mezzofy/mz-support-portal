@@ -1,56 +1,73 @@
+"""PostgreSQL client for the Support module (mezzofy_ai).
+
+Re-platformed from DynamoDB (Option B). Synchronous psycopg2 with a small
+threaded connection pool — deliberately sync so the vendored ticket/message
+services and GraphQL resolvers stay UNCHANGED (they call the repositories
+synchronously). svc-support is a separate service/process; it does not share
+the mz-ai-assistant async SQLAlchemy engine — it just talks to the same DB.
+"""
 import logging
-import boto3
-from botocore.config import Config
-from botocore.exceptions import ClientError
+from contextlib import contextmanager
+from typing import Optional
+
+import psycopg2
+from psycopg2.pool import ThreadedConnectionPool
+from psycopg2.extras import RealDictCursor
+
 from core.config import settings
 
 logger = logging.getLogger(__name__)
 
 
-class DynamoDBClient:
-    """DynamoDB client wrapper for Support module.
+def _libpq_dsn(url: str) -> str:
+    """Normalize a SQLAlchemy-style URL to a libpq DSN psycopg2 accepts.
 
-    Vendored unchanged from svc-tickets so support writes stay byte-compatible
-    with the merchant view of the shared mz-platform-dev table.
+    mz-ai-assistant stores DATABASE_URL as `postgresql+asyncpg://…`; psycopg2
+    needs `postgresql://…` (same trick the mz-ai `scripts/migrate.py` uses).
     """
+    return (
+        url.replace("postgresql+asyncpg://", "postgresql://")
+           .replace("postgresql+psycopg2://", "postgresql://")
+    )
+
+
+class PostgresClient:
+    """Synchronous PostgreSQL access with a threaded connection pool."""
 
     def __init__(self):
-        boto_config = Config(
-            region_name=settings.AWS_REGION,
-            retries={'max_attempts': 3, 'mode': 'adaptive'}
+        self._pool = ThreadedConnectionPool(
+            minconn=settings.DB_POOL_MIN,
+            maxconn=settings.DB_POOL_MAX,
+            dsn=_libpq_dsn(settings.DATABASE_URL),
         )
 
-        if settings.AWS_ENDPOINT_URL:
-            # Local DynamoDB for testing
-            self._client = boto3.client(
-                'dynamodb',
-                endpoint_url=settings.AWS_ENDPOINT_URL,
-                config=boto_config
-            )
-            self._resource = boto3.resource(
-                'dynamodb',
-                endpoint_url=settings.AWS_ENDPOINT_URL,
-                config=boto_config
-            )
-        else:
-            # Production DynamoDB
-            self._client = boto3.client('dynamodb', config=boto_config)
-            self._resource = boto3.resource('dynamodb', config=boto_config)
+    @contextmanager
+    def cursor(self, *, commit: bool = False):
+        """Borrow a pooled connection and yield a dict cursor.
 
-    def get_platform_table(self):
-        """Get the central platform single-table DynamoDB resource"""
-        return self._resource.Table(settings.PLATFORM_TABLE_NAME)
-
-    @property
-    def client(self):
-        """Get low-level DynamoDB client"""
-        return self._client
-
-    @property
-    def resource(self):
-        """Get high-level DynamoDB resource"""
-        return self._resource
+        Commits on clean exit when `commit=True`; always rolls back on error and
+        returns the connection to the pool.
+        """
+        conn = self._pool.getconn()
+        try:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                yield cur
+            if commit:
+                conn.commit()
+        except Exception:
+            conn.rollback()
+            raise
+        finally:
+            self._pool.putconn(conn)
 
 
-# Singleton instance
-db_client = DynamoDBClient()
+# Lazy singleton — the pool connects on first USE, not at import, so modules can
+# be imported (and unit-tested with a mocked client) without a live database.
+_db_client: Optional[PostgresClient] = None
+
+
+def get_db_client() -> PostgresClient:
+    global _db_client
+    if _db_client is None:
+        _db_client = PostgresClient()
+    return _db_client

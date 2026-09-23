@@ -1,67 +1,52 @@
-"""
-Opaque Token Validation Service (vendored unchanged from svc-tickets).
+"""JWT validation service — validates mz-ai-assistant access tokens (Option B).
 
-Validates Bearer tokens issued by svc-iam by looking up SESSION items
-via GSI1 (TOKEN#{accessToken}) in the shared platform DynamoDB table.
+Re-platformed from the DynamoDB opaque-token (GSI1 TOKEN#) lookup. svc-support
+reuses the mz-ai-assistant JWT: HS256, signed with the SHARED `JWT_SECRET`.
+Validation is stateless local decode (parity with the mz-ai server, which does
+not consult Redis on the access-token path). Returns the decoded claims.
 """
-import time
 import logging
 from typing import Dict, Optional
 
-from boto3.dynamodb.conditions import Key
+from jose import jwt
+from jose.exceptions import ExpiredSignatureError, JWTError
 
-from core.database import db_client
 from core.config import settings
 from core.errors import TokenExpiredError, TokenInvalidError
-from core.utils.constants import GSI1_NAME, GSI1_TOKEN, SYSTEM_ATTRS
 
 logger = logging.getLogger(__name__)
 
 
-def _strip_system_attrs(item: Dict) -> Dict:
-    """Remove single-table system attributes from an item."""
-    return {k: v for k, v in item.items() if k not in SYSTEM_ATTRS}
-
-
 class TokenService:
-    """Opaque token validation via GSI1 SESSION lookup in DynamoDB.
+    """Validate a mz-ai-assistant access token and return its claims.
 
-    Tokens are cryptographically random URL-safe strings with no embedded
-    claims. Validation resolves the SESSION item minted by svc-iam.
+    Access-token claims include: user_id, email, name, department, role,
+    permissions, token_type, jti, iat, exp.
     """
 
-    def __init__(self):
-        self.table = db_client.get_platform_table()
-
     def validate_access_token(self, access_token: str) -> Dict:
-        """Validate an opaque access token by looking up the SESSION via GSI1.
-
-        Returns the full session context. For a support-staff session this
-        includes: userId, email, sessionType, staffTeam, roleId, permissions.
+        """Decode + validate a JWT access token.
 
         Raises:
-            TokenInvalidError: If no session found for the token
-            TokenExpiredError: If the session has expired
+            TokenExpiredError: signature/exp expired.
+            TokenInvalidError: bad signature, malformed, or not an access token.
         """
         try:
-            response = self.table.query(
-                IndexName=GSI1_NAME,
-                KeyConditionExpression=Key('GSI1PK').eq(f'{GSI1_TOKEN}{access_token}'),
+            claims = jwt.decode(
+                access_token,
+                settings.JWT_SECRET,
+                algorithms=[settings.JWT_ALGORITHM],
             )
-        except Exception as e:
-            logger.error(f"DynamoDB error validating token: {e}")
-            raise TokenInvalidError("Token validation failed")
-
-        items = response.get('Items', [])
-        if not items:
+        except ExpiredSignatureError:
+            raise TokenExpiredError("Access token has expired")
+        except JWTError as e:
+            logger.debug("JWT validation failed: %s", e)
             raise TokenInvalidError("Invalid access token")
 
-        session = _strip_system_attrs(items[0])
+        if claims.get("token_type") != "access":
+            raise TokenInvalidError("Not an access token")
 
-        if int(time.time()) > session.get('expiresAt', 0):
-            raise TokenExpiredError("Access token has expired")
-
-        return session
+        return claims
 
 
 # Singleton

@@ -155,9 +155,18 @@ VALID_STAFF_TEAMS = [
 # RBAC — D1: reuse existing VIEW/ADD/EDIT/APPROVE action vocab on this resource).
 PERMISSION_RESOURCE_SUPPORT_TICKETS = "SUPPORT_TICKETS"
 
-# Sparse assignment attributes written onto a TICKET# item via the dynamic
-# update() (no schema change / no migration — Infra-confirmed).
+# Sparse assignment attributes written onto a ticket row via the dynamic
+# update() (nullable columns in Postgres — no migration for a new assign).
 ATTR_ASSIGNEE_ID = "assigneeId"
 ATTR_ASSIGNEE_NAME = "assigneeName"
 ATTR_ASSIGNED_TEAM = "assignedTeam"
 ATTR_ASSIGNED_AT = "assignedAt"
+
+# ── Auth reuse (Option B — DynamoDB→Postgres re-platform) ──────────────────────
+# svc-support authorizes staff by the mz-ai-assistant JWT `role` claim (roles
+# defined in the mz-ai server's config/roles.yaml). These are the support-console
+# roles; an admin (`*` permission) is also allowed. Replaces the old
+# sessionType==STAFF + SUPPORT_TICKETS opaque-token gate.
+SUPPORT_ROLE_AGENT = "support_agent"
+SUPPORT_ROLE_MANAGER = "support_manager"
+SUPPORT_CONSOLE_ROLES = {SUPPORT_ROLE_AGENT, SUPPORT_ROLE_MANAGER}

@@ -1,54 +1,53 @@
-"""Support-agent authentication — resolves a staff session into a SupportContext.
+"""Support-agent authentication — resolves a mz-ai-assistant JWT into a SupportContext.
 
-Design reference: backend-to-lead-support-staff-auth-design §3.
-
-Unlike svc-tickets (which 401s any token WITHOUT a merchantId), svc-support
-requires a *staff* session: one whose ``sessionType == "STAFF"`` AND which
-carries a ``SUPPORT_TICKETS`` permission. A merchant token (or a dev-merchant
-token) is a valid opaque token but is NOT a support agent → 403 (the coarse
-RBAC-deny the Tester asserts).
+Re-platformed for Option B (auth reuse). svc-support authorizes staff who hold a
+mz-ai-assistant access token whose `role` is a support-console role
+(`support_agent`/`support_manager`) — or an admin (`*` in permissions). A token
+for any other role is valid but NOT a support agent → 403 (the coarse RBAC-deny
+the Tester asserts). Missing/invalid/expired token → 401.
 """
 from dataclasses import dataclass, field
-from typing import Optional, List, Dict
+from typing import List
 
 from fastapi import Request
 
 from core.config import settings
 from core.errors import AuthenticationError, PermissionDeniedError
 from core.utils.constants import (
-    SESSION_TYPE_STAFF,
     STAFF_TEAM_SUPPORT,
-    PERMISSION_RESOURCE_SUPPORT_TICKETS,
+    VALID_STAFF_TEAMS,
+    SUPPORT_CONSOLE_ROLES,
 )
 from auth.token_service import get_token_service
 
 
 @dataclass
 class SupportContext:
-    """Authenticated support-agent identity extracted from a STAFF session."""
-    agent_id: str            # session.userId  → Message.senderId on SUPPORT replies
-    agent_name: str          # session.email   → Message display / assignee name
-    team: str                # session.staffTeam ("SUPPORT" | "SALES" | "FINANCE")
-    permissions: List[Dict] = field(default_factory=list)
-    session_id: str = ""
+    """Authenticated support-agent identity extracted from a mz-ai JWT."""
+    agent_id: str            # claims.user_id  → Message.senderId on SUPPORT replies + assignee id
+    agent_name: str          # claims.name (or email) → display / assignee name
+    team: str                # mapped from claims.department → a VALID_STAFF_TEAM
+    permissions: List = field(default_factory=list)   # JWT permission strings
+    session_id: str = ""     # claims.jti
 
 
-def _has_support_permission(permissions: List[Dict]) -> bool:
-    """True if the session grants any action on the SUPPORT_TICKETS resource.
+def _map_team(department: str) -> str:
+    """Map the JWT `department` (e.g. 'support') to a staff team (uppercase).
 
-    MVP RBAC is coarse (D1): presence of the resource is enough; per-action
-    gating (VIEW/ADD/EDIT/APPROVE) is deferred.
+    Falls back to SUPPORT when the department isn't one of the staff teams —
+    assign_ticket validates the team against VALID_STAFF_TEAMS.
     """
-    for perm in permissions or []:
-        if not isinstance(perm, dict):
-            continue
-        if perm.get("resource") == PERMISSION_RESOURCE_SUPPORT_TICKETS and perm.get("actions"):
-            return True
-    return False
+    team = (department or "").upper()
+    return team if team in VALID_STAFF_TEAMS else STAFF_TEAM_SUPPORT
+
+
+def _is_authorized(role: str, permissions: List) -> bool:
+    """True if the token's role may use the support console (or is admin)."""
+    return role in SUPPORT_CONSOLE_ROLES or "*" in (permissions or [])
 
 
 def resolve_agent_context(request: Request) -> SupportContext:
-    """Validate the request's staff credential and build a SupportContext.
+    """Validate the request's staff JWT and build a SupportContext.
 
     Raises:
         AuthenticationError (401): no / malformed credential, or invalid/expired token.
@@ -61,15 +60,12 @@ def resolve_agent_context(request: Request) -> SupportContext:
             return SupportContext(
                 agent_id=dev_agent_id,
                 agent_name=request.headers.get("X-Agent-Email", f"{dev_agent_id}@mezzofy.com"),
-                team=request.headers.get("X-Agent-Team", STAFF_TEAM_SUPPORT),
-                permissions=[{
-                    "resource": PERMISSION_RESOURCE_SUPPORT_TICKETS,
-                    "actions": ["VIEW", "ADD", "EDIT", "APPROVE"],
-                }],
+                team=_map_team(request.headers.get("X-Agent-Team", STAFF_TEAM_SUPPORT)),
+                permissions=["*"],
                 session_id="dev-session",
             )
 
-    # ── Production: opaque Bearer token → SESSION lookup ──
+    # ── Production: mz-ai-assistant Bearer JWT ──
     auth_header = request.headers.get("Authorization", "")
     if not auth_header.startswith("Bearer "):
         raise AuthenticationError("Missing or malformed Authorization header")
@@ -77,22 +73,25 @@ def resolve_agent_context(request: Request) -> SupportContext:
     token = auth_header[7:]
 
     try:
-        session = get_token_service().validate_access_token(token)
+        claims = get_token_service().validate_access_token(token)
     except Exception:
         # Invalid or expired token → 401 (do not leak which).
         raise AuthenticationError("Invalid or expired token")
 
-    # ── Coarse RBAC: must be a STAFF session carrying SUPPORT_TICKETS ──
-    if session.get("sessionType") != SESSION_TYPE_STAFF:
-        raise PermissionDeniedError("Not a support-staff session")
+    # Defense-in-depth: device-bound tokens are for paired hardware, not the console.
+    if claims.get("device_id"):
+        raise PermissionDeniedError("Device tokens are not permitted on the support console")
 
-    if not _has_support_permission(session.get("permissions", [])):
-        raise PermissionDeniedError("Session lacks SUPPORT_TICKETS permission")
+    # ── Coarse RBAC: must be a support-console role (or admin) ──
+    role = claims.get("role", "")
+    permissions = claims.get("permissions", []) or []
+    if not _is_authorized(role, permissions):
+        raise PermissionDeniedError("Not authorized for the support console")
 
     return SupportContext(
-        agent_id=session.get("userId", ""),
-        agent_name=session.get("email", ""),
-        team=session.get("staffTeam", STAFF_TEAM_SUPPORT),
-        permissions=session.get("permissions", []),
-        session_id=session.get("sessionId", ""),
+        agent_id=str(claims.get("user_id") or claims.get("sub") or ""),
+        agent_name=claims.get("name") or claims.get("email") or "",
+        team=_map_team(claims.get("department", "")),
+        permissions=permissions,
+        session_id=claims.get("jti", ""),
     )
