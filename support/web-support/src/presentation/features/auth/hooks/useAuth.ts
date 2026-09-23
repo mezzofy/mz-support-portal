@@ -1,22 +1,25 @@
 /**
  * useAuth Hook — Support Console
  *
- * Reads the support-staff session from localStorage (set by IAM after the
- * staff email+OTP flow -> /iam/api/staff/session). The claim carries no
- * merchantId; it carries the agent identity (userId/email/staffTeam).
+ * Option B (auth reuse): staff authenticate in-app against the mz-ai-assistant
+ * auth API (email+password -> OTP -> JWT). The JWT access token + user_info are
+ * persisted in localStorage; the GraphQL datasource attaches the token as a
+ * Bearer credential (svc-support validates it as a mz-ai access token).
  *
  * Also exposes non-hook getters (getAuthToken / getAgentIdentity) so the
- * GraphQL datasource can attach the Bearer token and the X-Agent-Id dev header
- * without React context.
+ * datasource can read the token / identity without React context, and
+ * saveSession() for the LoginPage to persist a successful login.
  */
 import { useState, useEffect } from 'react'
 import type { Agent } from '../../../../domain/entities/agent.entity'
+import type { VerifyOtpResponse } from '../../../../data/datasources/auth-api.datasource'
 
 export interface AuthUser {
   id: string
   email: string
   name: string
   team?: string
+  department?: string
   role?: string
   [key: string]: unknown
 }
@@ -30,16 +33,20 @@ export interface AuthState {
 const DEV = import.meta.env.DEV
 const MOCK_AUTH = import.meta.env.VITE_MOCK_AUTH === 'true'
 
+const TOKEN_KEY = 'authToken'
+const REFRESH_KEY = 'refreshToken'
+const USER_KEY = 'user'
+
 /** True when the local dev bypass (mock auth) is active. */
 export function isDevBypass(): boolean {
   return DEV && MOCK_AUTH
 }
 
-/** Opaque staff Bearer token, or null. Used by the datasource. */
+/** JWT access token (or null). Attached as Bearer by the datasource. */
 export function getAuthToken(): string | null {
   if (isDevBypass()) return 'dev-mock-token'
   try {
-    return localStorage.getItem('authToken')
+    return localStorage.getItem(TOKEN_KEY)
   } catch {
     return null
   }
@@ -56,18 +63,32 @@ export function getAgentIdentity(): Agent | null {
     }
   }
   try {
-    const userJson = localStorage.getItem('user')
+    const userJson = localStorage.getItem(USER_KEY)
     if (!userJson) return null
     const user = JSON.parse(userJson) as AuthUser
     if (!user?.id) return null
+    // mz-ai user_info carries `department`; the console team is its uppercase form.
+    const team =
+      user.team || (user.department ? String(user.department).toUpperCase() : undefined)
     return {
       agentId: user.id,
       agentName: user.name || user.email || user.id,
       email: user.email || '',
-      team: user.team,
+      team,
     }
   } catch {
     return null
+  }
+}
+
+/** Persist a successful login (called by LoginPage after verify-otp). */
+export function saveSession(session: VerifyOtpResponse): void {
+  try {
+    localStorage.setItem(TOKEN_KEY, session.access_token)
+    if (session.refresh_token) localStorage.setItem(REFRESH_KEY, session.refresh_token)
+    localStorage.setItem(USER_KEY, JSON.stringify(session.user_info))
+  } catch {
+    /* storage unavailable — the caller still navigates; a reload would re-prompt */
   }
 }
 
@@ -76,18 +97,7 @@ function readAuthState(): AuthState {
     return { isAuthenticated: true, agent: getAgentIdentity(), loading: false }
   }
   try {
-    // Auth data handed off from IAM via ?auth= (base64 JSON), then persisted.
-    const urlParams = new URLSearchParams(window.location.search)
-    const authParam = urlParams.get('auth')
-    if (authParam) {
-      const authData = JSON.parse(atob(decodeURIComponent(authParam)))
-      localStorage.setItem('authToken', authData.token)
-      if (authData.refresh) localStorage.setItem('refreshToken', authData.refresh)
-      localStorage.setItem('user', JSON.stringify(authData.user))
-      window.history.replaceState({}, '', window.location.pathname)
-    }
-
-    const token = localStorage.getItem('authToken')
+    const token = getAuthToken()
     const agent = getAgentIdentity()
     if (token && agent) {
       return { isAuthenticated: true, agent, loading: false }
@@ -112,20 +122,20 @@ export function useAuth(): AuthState {
   return authState
 }
 
-/** Clear the staff session and return to the IAM staff login. */
+/** In-app login route (respects the Vite basename, e.g. /support/). */
+export function loginPath(): string {
+  const base = import.meta.env.BASE_URL || '/'
+  return `${base}${base.endsWith('/') ? '' : '/'}login`
+}
+
+/** Clear the staff session and return to the in-app login. */
 export function logout(): void {
   try {
-    localStorage.removeItem('authToken')
-    localStorage.removeItem('refreshToken')
-    localStorage.removeItem('user')
+    localStorage.removeItem(TOKEN_KEY)
+    localStorage.removeItem(REFRESH_KEY)
+    localStorage.removeItem(USER_KEY)
   } catch {
     /* ignore */
   }
-  const authUrl = import.meta.env.VITE_AUTH_URL
-  if (authUrl) {
-    window.location.replace(`${authUrl}/login`)
-  } else {
-    const gatewayUrl = import.meta.env.VITE_GATEWAY_URL
-    window.location.replace(gatewayUrl ? `${gatewayUrl}/auth/login` : '/auth/login')
-  }
+  window.location.replace(loginPath())
 }

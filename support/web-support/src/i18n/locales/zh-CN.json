@@ -7,7 +7,26 @@
       "dismiss": "忽略"
     },
     "auth": {
-      "verifying": "正在验证员工会话..."
+      "verifying": "正在验证员工会话...",
+      "login": {
+        "title": "客服控制台",
+        "subtitle": "使用您的 Mezzofy 员工账户登录",
+        "email": "电子邮箱",
+        "password": "密码",
+        "sendCode": "发送验证码",
+        "sending": "发送中...",
+        "otpSubtitle": "我们已将验证码发送至 {{email}}",
+        "code": "验证码",
+        "verify": "验证并登录",
+        "verifying": "验证中...",
+        "resend": "重新发送验证码",
+        "resendSent": "新的验证码已发送。",
+        "back": "返回",
+        "errors": {
+          "generic": "登录失败，请重试。",
+          "network": "无法连接登录服务，请检查网络连接。"
+        }
+      }
     },
     "nav": {
       "queue": "工单队列",

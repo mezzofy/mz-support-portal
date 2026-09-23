@@ -1,10 +1,10 @@
 /**
  * AuthGuard — Support Console
- * Protected route wrapper; redirects to the IAM staff login when unauthenticated.
+ * Protected route wrapper; redirects to the in-app /login when unauthenticated.
  */
-import { useEffect } from 'react'
+import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useAuth, logout } from '../hooks/useAuth'
+import { useAuth } from '../hooks/useAuth'
 
 interface AuthGuardProps {
   children: React.ReactNode
@@ -13,13 +13,6 @@ interface AuthGuardProps {
 export function AuthGuard({ children }: AuthGuardProps) {
   const { t } = useTranslation()
   const { isAuthenticated, loading } = useAuth()
-
-  useEffect(() => {
-    if (loading) return
-    if (!isAuthenticated) {
-      logout()
-    }
-  }, [isAuthenticated, loading])
 
   if (loading) {
     return (
@@ -32,7 +25,9 @@ export function AuthGuard({ children }: AuthGuardProps) {
     )
   }
 
-  if (!isAuthenticated) return null
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />
+  }
 
   return <>{children}</>
 }

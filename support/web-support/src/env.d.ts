@@ -7,13 +7,10 @@ interface ImportMetaEnv {
   /** GraphQL endpoint of svc-support (frozen: /support/api/graphql, port 8005). */
   readonly VITE_SUPPORT_API_URL: string
 
-  /** Gateway URL — used for cross-app navigation and logout fallback. */
-  readonly VITE_GATEWAY_URL: string
+  /** mz-ai-assistant auth API base (Option B): staff login /auth/login + /auth/verify-otp. */
+  readonly VITE_AUTH_API_URL: string
 
-  /** Auth URL — gateway route to IAM staff login for logout/redirect. */
-  readonly VITE_AUTH_URL: string
-
-  /** Dev bypass — 'true' skips the real staff token and uses the X-Agent-Id dev header. */
+  /** Dev bypass — 'true' skips the real login and uses the X-Agent-Id dev header. */
   readonly VITE_MOCK_AUTH: string
 
   /** Dev agent identity used with the X-Agent-Id bypass (development only). */

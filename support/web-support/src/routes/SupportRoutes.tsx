@@ -3,6 +3,7 @@
  */
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthGuard } from '../presentation/features/auth/guards/AuthGuard'
+import { LoginPage } from '../presentation/features/auth/pages/LoginPage'
 import { QueuePage } from '../presentation/features/support/pages/QueuePage'
 import { MyAssignedPage } from '../presentation/features/support/pages/MyAssignedPage'
 import { SupportTicketDetailPage } from '../presentation/features/support/pages/SupportTicketDetailPage'
@@ -10,6 +11,7 @@ import { SupportTicketDetailPage } from '../presentation/features/support/pages/
 export function SupportRoutes() {
   return (
     <Routes>
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/" element={<Navigate to="/queue" replace />} />
       <Route path="/queue" element={<AuthGuard><QueuePage /></AuthGuard>} />
       <Route path="/my" element={<AuthGuard><MyAssignedPage /></AuthGuard>} />

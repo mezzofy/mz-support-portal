@@ -7,7 +7,26 @@
       "dismiss": "Dismiss"
     },
     "auth": {
-      "verifying": "Verifying staff session..."
+      "verifying": "Verifying staff session...",
+      "login": {
+        "title": "Support Console",
+        "subtitle": "Sign in with your Mezzofy staff account",
+        "email": "Email",
+        "password": "Password",
+        "sendCode": "Send verification code",
+        "sending": "Sending...",
+        "otpSubtitle": "We sent a verification code to {{email}}",
+        "code": "Verification code",
+        "verify": "Verify & sign in",
+        "verifying": "Verifying...",
+        "resend": "Resend code",
+        "resendSent": "A new code has been sent.",
+        "back": "Back",
+        "errors": {
+          "generic": "Sign-in failed. Please try again.",
+          "network": "Unable to reach the login service. Check your connection."
+        }
+      }
     },
     "nav": {
       "queue": "Queue",
