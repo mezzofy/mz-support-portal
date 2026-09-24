@@ -1,0 +1,26 @@
+# systemd unit for svc-support (Support Console API + SPA) — Option B (Postgres + mz-ai JWT).
+# Install: sudo cp deploy/mezzofy-support.service /etc/systemd/system/
+#          sudo systemctl daemon-reload && sudo systemctl enable --now mezzofy-support
+# Separate from mezzofy-api / mezzofy-celery. No DynamoDB, no AWS creds required.
+#
+# Adjust paths if the checkout root differs. Assumes:
+#   /home/ubuntu/mz-support-portal/support/svc-support/{src,venv,.env,public}
+
+[Unit]
+Description=Mezzofy Support Console (svc-support :8005)
+After=network.target postgresql.service redis.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/mz-support-portal/support/svc-support/src
+# Secrets/config live in svc-support/.env (gitignored): ENVIRONMENT, DATABASE_URL, JWT_SECRET, JWT_ALGORITHM, PORT.
+EnvironmentFile=/home/ubuntu/mz-support-portal/support/svc-support/.env
+ExecStart=/home/ubuntu/mz-support-portal/support/svc-support/venv/bin/uvicorn main:app --host 0.0.0.0 --port 8005
+Restart=always
+RestartSec=3
+# Fail fast if .env is missing rather than crash-looping silently.
+ExecStartPre=/usr/bin/test -f /home/ubuntu/mz-support-portal/support/svc-support/.env
+
+[Install]
+WantedBy=multi-user.target
