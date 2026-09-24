@@ -1,148 +1,122 @@
-"""RBAC boundary — resolve_agent_context + the GraphQL context HTTP mapping.
+"""Auth + coarse RBAC — Option B (mz-ai JWT reuse). Runs WITHOUT a database:
+auth is resolved in get_context before any resolver/DB call.
 
-The support console is staff-only. These tests assert the coarse RBAC contract
-from the handoff:
-  * no / invalid token           → 401 (AuthenticationError)
-  * valid MERCHANT session        → 403 (PermissionDeniedError)
-  * STAFF session w/o perm        → 403
-  * valid STAFF session           → SupportContext
-  * X-Agent-Id dev bypass          → only when ENVIRONMENT=development
-and that get_context() surfaces those as REAL HTTP status codes (not GraphQL
-errors).
+Covers `resolve_agent_context` directly (unit) and the GraphQL HTTP boundary
+(401/403 vs 200) via TestClient.
 """
+import time
+
 import pytest
-from fastapi import HTTPException
 
-from core.config import settings
+from conftest import make_token, gql
+from auth.dependencies import resolve_agent_context
 from core.errors import AuthenticationError, PermissionDeniedError
-from auth.dependencies import resolve_agent_context, SupportContext
-from controllers.graphql.context import get_context
-
-SUPPORT_PERM = [{"resource": "SUPPORT_TICKETS", "actions": ["VIEW", "ADD", "EDIT", "APPROVE"]}]
 
 
-class _StubRequest:
-    """Minimal stand-in for starlette Request (headers.get + client.host)."""
+class _Req:
+    """Minimal stand-in for starlette Request (only .headers is used)."""
+    def __init__(self, headers):
+        self.headers = headers
 
-    def __init__(self, headers=None, client_host="1.2.3.4"):
-        self.headers = headers or {}
-
-        class _Client:
-            host = client_host
-        self.client = _Client() if client_host else None
-
-
-@pytest.fixture
-def prod_env(monkeypatch):
-    """Force production so the X-Agent-Id dev bypass is OFF and tokens are checked."""
-    monkeypatch.setattr(settings, "ENVIRONMENT", "production")
+    class _C:
+        host = "127.0.0.1"
+    client = _C()
 
 
-@pytest.fixture
-def dev_env(monkeypatch):
-    monkeypatch.setattr(settings, "ENVIRONMENT", "development")
+# ── Unit: resolve_agent_context ────────────────────────────────────────────────
+
+def test_valid_support_agent_builds_context():
+    ctx = resolve_agent_context(_Req({"Authorization": "Bearer " + make_token(role="support_agent")}))
+    assert ctx.agent_id == "u-agent-1"
+    assert ctx.agent_name == "Sam Rivera"
+    assert ctx.team == "SUPPORT"           # department 'support' -> uppercased team
+    assert ctx.session_id == "jti-1"
 
 
-# ── resolve_agent_context ──────────────────────────────────────────────────────
-
-class TestResolveAgentContext:
-    def test_no_auth_header_raises_401(self, platform, prod_env):
-        with pytest.raises(AuthenticationError) as exc:
-            resolve_agent_context(_StubRequest(headers={}))
-        assert exc.value.status_code == 401
-
-    def test_malformed_header_raises_401(self, platform, prod_env):
-        req = _StubRequest(headers={"Authorization": "Token abc"})
-        with pytest.raises(AuthenticationError) as exc:
-            resolve_agent_context(req)
-        assert exc.value.status_code == 401
-
-    def test_invalid_token_raises_401(self, platform, prod_env):
-        # No SESSION seeded for this token → lookup fails → 401.
-        req = _StubRequest(headers={"Authorization": "Bearer does-not-exist"})
-        with pytest.raises(AuthenticationError) as exc:
-            resolve_agent_context(req)
-        assert exc.value.status_code == 401
-
-    def test_valid_merchant_session_raises_403(self, platform, prod_env):
-        platform.session("mtok", session_type="MERCHANT", merchant_id="merchant-A",
-                          permissions=[])
-        req = _StubRequest(headers={"Authorization": "Bearer mtok"})
-        with pytest.raises(PermissionDeniedError) as exc:
-            resolve_agent_context(req)
-        assert exc.value.status_code == 403
-
-    def test_staff_session_without_support_permission_raises_403(self, platform, prod_env):
-        platform.session("stok", session_type="STAFF", staff_team="SUPPORT",
-                          permissions=[{"resource": "REPORTS", "actions": ["VIEW"]}])
-        req = _StubRequest(headers={"Authorization": "Bearer stok"})
-        with pytest.raises(PermissionDeniedError) as exc:
-            resolve_agent_context(req)
-        assert exc.value.status_code == 403
-
-    def test_valid_staff_session_returns_context(self, platform, prod_env):
-        platform.session("gtok", session_type="STAFF", staff_team="SALES",
-                          permissions=SUPPORT_PERM, user_id="user-agent-9",
-                          email="sam@mezzofy.com")
-        req = _StubRequest(headers={"Authorization": "Bearer gtok"})
-
-        ctx = resolve_agent_context(req)
-        assert isinstance(ctx, SupportContext)
-        assert ctx.agent_id == "user-agent-9"
-        assert ctx.agent_name == "sam@mezzofy.com"
-        assert ctx.team == "SALES"
-
-    def test_expired_staff_token_raises_401(self, platform, prod_env):
-        platform.session("etok", session_type="STAFF", staff_team="SUPPORT",
-                          permissions=SUPPORT_PERM, expires_at=0)
-        req = _StubRequest(headers={"Authorization": "Bearer etok"})
-        with pytest.raises(AuthenticationError) as exc:
-            resolve_agent_context(req)
-        assert exc.value.status_code == 401
+def test_support_manager_allowed():
+    ctx = resolve_agent_context(_Req({"Authorization": "Bearer " + make_token(role="support_manager")}))
+    assert ctx.agent_id == "u-agent-1"
 
 
-# ── Dev bypass (X-Agent-Id) ────────────────────────────────────────────────────
-
-class TestDevBypass:
-    def test_dev_bypass_works_in_development(self, platform, dev_env):
-        req = _StubRequest(headers={
-            "X-Agent-Id": "agent-dev",
-            "X-Agent-Email": "dev@mezzofy.com",
-            "X-Agent-Team": "FINANCE",
-        })
-        ctx = resolve_agent_context(req)
-        assert ctx.agent_id == "agent-dev"
-        assert ctx.agent_name == "dev@mezzofy.com"
-        assert ctx.team == "FINANCE"
-
-    def test_dev_bypass_ignored_in_production(self, platform, prod_env):
-        # Same header, but production → falls through to token check → 401.
-        req = _StubRequest(headers={"X-Agent-Id": "agent-dev"})
-        with pytest.raises(AuthenticationError):
-            resolve_agent_context(req)
+def test_admin_star_permission_allowed_regardless_of_role():
+    tok = make_token(role="executive", permissions=["*"])
+    assert resolve_agent_context(_Req({"Authorization": "Bearer " + tok})).agent_id == "u-agent-1"
 
 
-# ── get_context() HTTP-status mapping (the 401/403 are real HTTP, not GraphQL) ──
+@pytest.mark.parametrize("role", ["sales_rep", "finance_viewer", "hr_staff", "merchant", ""])
+def test_non_support_role_forbidden(role):
+    tok = make_token(role=role, permissions=["something_else"])
+    with pytest.raises(PermissionDeniedError):
+        resolve_agent_context(_Req({"Authorization": "Bearer " + tok}))
 
-class TestGetContextHttpMapping:
-    @pytest.mark.asyncio
-    async def test_no_token_maps_to_http_401(self, platform, prod_env):
-        with pytest.raises(HTTPException) as exc:
-            await get_context(_StubRequest(headers={}))
-        assert exc.value.status_code == 401
 
-    @pytest.mark.asyncio
-    async def test_merchant_token_maps_to_http_403(self, platform, prod_env):
-        platform.session("mtok", session_type="MERCHANT", merchant_id="merchant-A",
-                          permissions=[])
-        with pytest.raises(HTTPException) as exc:
-            await get_context(_StubRequest(headers={"Authorization": "Bearer mtok"}))
-        assert exc.value.status_code == 403
+def test_device_token_forbidden():
+    tok = make_token(role="support_agent", device_id="stackchan-1")
+    with pytest.raises(PermissionDeniedError):
+        resolve_agent_context(_Req({"Authorization": "Bearer " + tok}))
 
-    @pytest.mark.asyncio
-    async def test_valid_staff_token_builds_context(self, platform, prod_env):
-        platform.session("gtok", session_type="STAFF", staff_team="SUPPORT",
-                          permissions=SUPPORT_PERM, user_id="user-agent-9")
-        ctx = await get_context(_StubRequest(headers={"Authorization": "Bearer gtok"}))
-        assert ctx.agent_id == "user-agent-9"
-        assert ctx.team == "SUPPORT"
+
+def test_missing_header_unauthenticated():
+    with pytest.raises(AuthenticationError):
+        resolve_agent_context(_Req({}))
+
+
+def test_malformed_header_unauthenticated():
+    with pytest.raises(AuthenticationError):
+        resolve_agent_context(_Req({"Authorization": "Token abc"}))
+
+
+def test_garbage_token_unauthenticated():
+    with pytest.raises(AuthenticationError):
+        resolve_agent_context(_Req({"Authorization": "Bearer not-a-jwt"}))
+
+
+def test_expired_token_unauthenticated():
+    tok = make_token(role="support_agent", exp_delta=-10)
+    with pytest.raises(AuthenticationError):
+        resolve_agent_context(_Req({"Authorization": "Bearer " + tok}))
+
+
+def test_non_access_token_type_unauthenticated():
+    tok = make_token(role="support_agent", token_type="refresh")
+    with pytest.raises(AuthenticationError):
+        resolve_agent_context(_Req({"Authorization": "Bearer " + tok}))
+
+
+def test_dev_bypass_header(monkeypatch):
+    # ENVIRONMENT=development (conftest default) + X-Agent-Id → dev context, no JWT.
+    ctx = resolve_agent_context(_Req({"X-Agent-Id": "dev-1", "X-Agent-Team": "SUPPORT"}))
+    assert ctx.agent_id == "dev-1" and ctx.team == "SUPPORT"
+
+
+# ── HTTP boundary: GraphQL 401/403/200 (no DB — __typename never touches the DB) ─
+
+def test_http_no_token_401(client):
+    r = gql(client, "{ __typename }")
+    assert r.status_code == 401
+
+
+def test_http_merchant_role_403(client):
+    tok = make_token(role="sales_rep", permissions=["sales_read"])
+    r = gql(client, "{ __typename }", headers={"Authorization": "Bearer " + tok})
+    assert r.status_code == 403
+
+
+def test_http_device_token_403(client):
+    tok = make_token(role="support_agent", device_id="stackchan-1")
+    r = gql(client, "{ __typename }", headers={"Authorization": "Bearer " + tok})
+    assert r.status_code == 403
+
+
+def test_http_valid_support_token_passes_auth(client):
+    tok = make_token(role="support_agent")
+    r = gql(client, "{ __typename }", headers={"Authorization": "Bearer " + tok})
+    assert r.status_code == 200
+    body = r.json()
+    assert "errors" not in body           # auth passed → query executed
+    assert body["data"]["__typename"]     # root query type name (SupportQuery)
+
+
+def test_http_dev_bypass_passes_auth(client):
+    r = gql(client, "{ __typename }", headers={"X-Agent-Id": "dev-1"})
+    assert r.status_code == 200

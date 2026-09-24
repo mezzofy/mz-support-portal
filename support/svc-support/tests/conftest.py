@@ -1,190 +1,155 @@
-"""Shared pytest fixtures for svc-support (CR-support-console-v1.0, Gate 3).
+"""Shared pytest fixtures for svc-support (CR-support-postgres-repivot, Gate 3).
 
-Stands up an in-memory ``mz-platform-dev`` with moto using the REAL platform key
-schema (PK/SK + GSI1 for token/session lookup + GSI2 for the cross-merchant
-ticket queue), then patches the ``db_client`` singleton so every repository under
-``src/`` reads/writes the mock table. NO live AWS is touched.
+Re-platformed from moto/DynamoDB to PostgreSQL (Option B) + mz-ai JWT auth.
 
-Seed model (single-table, byte-compatible with svc-tickets / the merchant view):
-  * TICKET#{id}   PK==SK, entityType=TICKET, GSI2PK=ENTITY#TICKET, GSI2SK={createdAt}#{id}
-  * MESSAGE#{id}  PK=TICKET#{ticketId}, SK=MESSAGE#{id}, entityType=MESSAGE
-  * MERCHANT#{id} PK==SK, name (for merchantName resolve-on-read)
-  * SESSION       GSI1PK=TOKEN#{token}, sessionType STAFF|MERCHANT, permissions (auth tests)
+Two tiers:
+  * UNIT (runs everywhere, no DB): auth RBAC via real JWTs + HTTP 401/403 deny
+    (auth is resolved in get_context BEFORE any resolver/DB call).
+  * INTEGRATION (`@pytest.mark.integration`, auto-skip): repo/service/GraphQL against
+    a REAL Postgres. Enabled ONLY when SVC_SUPPORT_TEST_DATABASE_URL is set — a
+    DEDICATED test DB, because the fixture TRUNCATEs tickets/messages/merchants.
+    Never falls back to DATABASE_URL, so a real/prod DB is never truncated.
 """
 import os
 import sys
 import time
 
-import boto3
 import pytest
-from moto import mock_aws
 
-# Make ``src/`` importable exactly like the service runs it (uvicorn from src/).
-SRC = os.path.join(os.path.dirname(__file__), "..", "src")
-sys.path.insert(0, os.path.abspath(SRC))
+# ── Env MUST be set before importing any src module (Settings() reads it at import) ──
+os.environ.setdefault("JWT_SECRET", "test-secret-key-minimum-thirty-two-chars-000")
+os.environ.setdefault("JWT_ALGORITHM", "HS256")
+os.environ.setdefault("ENVIRONMENT", "development")
 
-PLATFORM_TABLE = "mz-platform-dev"
+_TEST_DB = os.environ.get("SVC_SUPPORT_TEST_DATABASE_URL")
+if _TEST_DB:
+    os.environ["DATABASE_URL"] = _TEST_DB  # repos + fixture share this via get_db_client()
 
+# Make src/ importable exactly like the service runs it (uvicorn from src/).
+SRC = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src"))
+sys.path.insert(0, SRC)
 
-# ── AWS env so moto/boto never reach for real credentials ──────────────────────
-@pytest.fixture(autouse=True)
-def aws_env(monkeypatch):
-    monkeypatch.setenv("AWS_ACCESS_KEY_ID", "testing")
-    monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "testing")
-    monkeypatch.setenv("AWS_SECURITY_TOKEN", "testing")
-    monkeypatch.setenv("AWS_SESSION_TOKEN", "testing")
-    monkeypatch.setenv("AWS_DEFAULT_REGION", "us-east-1")
-    monkeypatch.setenv("AWS_ENDPOINT_URL", "")
+from jose import jwt  # noqa: E402
+from core.config import settings  # noqa: E402
 
 
-def _create_platform_table(dynamodb):
-    """Create mz-platform-dev with GSI1 (token/session) and GSI2 (entity queue)."""
-    dynamodb.create_table(
-        TableName=PLATFORM_TABLE,
-        KeySchema=[
-            {"AttributeName": "PK", "KeyType": "HASH"},
-            {"AttributeName": "SK", "KeyType": "RANGE"},
-        ],
-        AttributeDefinitions=[
-            {"AttributeName": "PK", "AttributeType": "S"},
-            {"AttributeName": "SK", "AttributeType": "S"},
-            {"AttributeName": "GSI1PK", "AttributeType": "S"},
-            {"AttributeName": "GSI1SK", "AttributeType": "S"},
-            {"AttributeName": "GSI2PK", "AttributeType": "S"},
-            {"AttributeName": "GSI2SK", "AttributeType": "S"},
-        ],
-        GlobalSecondaryIndexes=[
-            {
-                "IndexName": "GSI1",
-                "KeySchema": [
-                    {"AttributeName": "GSI1PK", "KeyType": "HASH"},
-                    {"AttributeName": "GSI1SK", "KeyType": "RANGE"},
-                ],
-                "Projection": {"ProjectionType": "ALL"},
-            },
-            {
-                "IndexName": "GSI2",
-                "KeySchema": [
-                    {"AttributeName": "GSI2PK", "KeyType": "HASH"},
-                    {"AttributeName": "GSI2SK", "KeyType": "RANGE"},
-                ],
-                "Projection": {"ProjectionType": "ALL"},
-            },
-        ],
-        BillingMode="PAY_PER_REQUEST",
-    )
+# ── JWT helper (mirrors mz-ai-assistant access-token claims) ───────────────────
 
-
-class Seeder:
-    """Thin helper to put the exact single-table item shapes svc-support reads."""
-
-    def __init__(self, table):
-        self.table = table
-        self._n = 0
-
-    def _next_created_at(self) -> str:
-        # Monotonic, sortable timestamps so GSI2SK ordering is deterministic.
-        self._n += 1
-        return f"2026-09-1{self._n // 10}T00:00:{self._n % 60:02d}.000000+00:00"
-
-    def ticket(self, ticket_id, merchant_id, **overrides):
-        created_at = overrides.pop("createdAt", None) or self._next_created_at()
-        item = {
-            "PK": f"TICKET#{ticket_id}",
-            "SK": f"TICKET#{ticket_id}",
-            "entityType": "TICKET",
-            "GSI2PK": "ENTITY#TICKET",
-            "GSI2SK": f"{created_at}#{ticket_id}",
-            "ticketId": ticket_id,
-            "merchantId": merchant_id,
-            "userId": overrides.pop("userId", "user-cust-1"),
-            "type": overrides.pop("type", "GENERAL"),
-            "status": overrides.pop("status", "OPEN"),
-            "priority": overrides.pop("priority", "MEDIUM"),
-            "subject": overrides.pop("subject", "Help please"),
-            "description": overrides.pop("description", "Something is broken."),
-            "attachments": overrides.pop("attachments", []),
-            "createdAt": created_at,
-            "updatedAt": overrides.pop("updatedAt", created_at),
-        }
-        item.update(overrides)  # assigneeId / assignedTeam / closedAt / etc.
-        self.table.put_item(Item=item)
-        return item
-
-    def message(self, ticket_id, message_id, sender_id, sender_type, **overrides):
-        created_at = overrides.pop("createdAt", None) or self._next_created_at()
-        item = {
-            "PK": f"TICKET#{ticket_id}",
-            "SK": f"MESSAGE#{message_id}",
-            "entityType": "MESSAGE",
-            "messageId": message_id,
-            "ticketId": ticket_id,
-            "merchantId": overrides.pop("merchantId", "merchant-A"),
-            "senderId": sender_id,
-            "senderType": sender_type,
-            "content": overrides.pop("content", "hello"),
-            "attachments": overrides.pop("attachments", []),
-            "isRead": overrides.pop("isRead", False),
-            "createdAt": created_at,
-        }
-        item.update(overrides)
-        self.table.put_item(Item=item)
-        return item
-
-    def merchant(self, merchant_id, name):
-        self.table.put_item(Item={
-            "PK": f"MERCHANT#{merchant_id}",
-            "SK": f"MERCHANT#{merchant_id}",
-            "entityType": "MERCHANT",
-            "merchantId": merchant_id,
-            "name": name,
-        })
-
-    def session(self, token, *, session_type, permissions=None, staff_team=None,
-                merchant_id=None, user_id="user-agent-1", email="agent@mezzofy.com",
-                expires_at=None):
-        item = {
-            "PK": f"SESSION#{token}",
-            "SK": f"SESSION#{token}",
-            "entityType": "SESSION",
-            "GSI1PK": f"TOKEN#{token}",
-            "GSI1SK": "SESSION",
-            "sessionId": f"sess-{token}",
-            "userId": user_id,
-            "email": email,
-            "sessionType": session_type,
-            "accessToken": token,
-            "permissions": permissions if permissions is not None else [],
-            "expiresAt": expires_at if expires_at is not None else int(time.time()) + 3600,
-        }
-        if staff_team is not None:
-            item["staffTeam"] = staff_team
-        if merchant_id is not None:
-            item["merchantId"] = merchant_id
-        self.table.put_item(Item=item)
-        return item
+def make_token(
+    role: str = "support_agent",
+    *,
+    permissions=None,
+    department: str = "support",
+    token_type: str = "access",
+    exp_delta: int = 300,
+    **extra,
+) -> str:
+    """Sign a mz-ai-style access token with the test JWT_SECRET."""
+    now = int(time.time())
+    claims = {
+        "user_id": "u-agent-1",
+        "sub": "u-agent-1",
+        "name": "Sam Rivera",
+        "email": "sam@mezzofy.com",
+        "department": department,
+        "role": role,
+        "permissions": ["support_read"] if permissions is None else permissions,
+        "token_type": token_type,
+        "jti": "jti-1",
+        "iat": now,
+        "exp": now + exp_delta,
+    }
+    claims.update(extra)
+    return jwt.encode(claims, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
 
 
 @pytest.fixture
-def platform(aws_env):
-    """Mocked mz-platform-dev + patched db_client; yields a Seeder.
+def token():
+    """Expose the token factory to tests."""
+    return make_token
 
-    Resets the token_service singleton so its cached table handle is rebound to
-    the mock resource for each test.
-    """
-    with mock_aws():
-        dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
-        _create_platform_table(dynamodb)
 
-        from core.database import db_client
-        original_resource = db_client._resource
-        db_client._resource = dynamodb
+# ── FastAPI TestClient (no DB needed for auth-deny paths) ──────────────────────
 
-        # Rebind the lazy token-service singleton to the mock table.
-        import auth.token_service as ts
-        ts._token_service = None
+@pytest.fixture
+def client():
+    from fastapi.testclient import TestClient
+    from main import app
+    return TestClient(app)
 
-        yield Seeder(db_client.get_platform_table())
 
-        db_client._resource = original_resource
-        ts._token_service = None
+def gql(client, query: str, headers=None, variables=None):
+    """POST a GraphQL operation; returns the httpx Response."""
+    body = {"query": query}
+    if variables is not None:
+        body["variables"] = variables
+    return client.post("/support/api/graphql", json=body, headers=headers or {})
+
+
+# ── Integration: real Postgres (dedicated test DB only) ────────────────────────
+
+_DDL = """
+CREATE TABLE IF NOT EXISTS tickets (
+    ticket_id CHAR(26) PRIMARY KEY,
+    merchant_id VARCHAR(64) NOT NULL,
+    user_id VARCHAR(64) NOT NULL,
+    type VARCHAR(16) NOT NULL,
+    status VARCHAR(16) NOT NULL DEFAULT 'OPEN',
+    priority VARCHAR(8) NOT NULL,
+    subject VARCHAR(200) NOT NULL,
+    description VARCHAR(5000) NOT NULL,
+    attachments JSONB NOT NULL DEFAULT '[]'::jsonb,
+    assignee_id VARCHAR(64), assignee_name VARCHAR(255),
+    assigned_team VARCHAR(64), assigned_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    closed_at TIMESTAMPTZ
+);
+CREATE TABLE IF NOT EXISTS messages (
+    message_id CHAR(26) PRIMARY KEY,
+    ticket_id CHAR(26) NOT NULL REFERENCES tickets(ticket_id) ON DELETE CASCADE,
+    merchant_id VARCHAR(64) NOT NULL,
+    sender_id VARCHAR(64) NOT NULL,
+    sender_type VARCHAR(8) NOT NULL,
+    content VARCHAR(2000) NOT NULL,
+    attachments JSONB NOT NULL DEFAULT '[]'::jsonb,
+    is_read BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS merchants (
+    merchant_id VARCHAR(64) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+"""
+
+
+@pytest.fixture(scope="session")
+def _pg_ready():
+    url = os.environ.get("SVC_SUPPORT_TEST_DATABASE_URL")
+    if not url:
+        pytest.skip("integration: set SVC_SUPPORT_TEST_DATABASE_URL to a dedicated test DB")
+    import psycopg2
+    from core.database import _libpq_dsn, get_db_client
+    try:
+        conn = psycopg2.connect(_libpq_dsn(url))
+    except Exception as e:  # pragma: no cover - env dependent
+        pytest.skip(f"integration: test DB unreachable ({e})")
+    conn.autocommit = True
+    with conn.cursor() as cur:
+        cur.execute(_DDL)
+    conn.close()
+    return get_db_client()
+
+
+@pytest.fixture
+def pg(_pg_ready):
+    """Clean + seed the test DB before each integration test; returns the client."""
+    client = _pg_ready
+    with client.cursor(commit=True) as cur:
+        cur.execute("TRUNCATE tickets, messages, merchants CASCADE")
+        cur.execute(
+            "INSERT INTO merchants (merchant_id, name) VALUES "
+            "('m_acme','Acme Retail'), ('m_blue','Blue Sky Cafe')"
+        )
+    return client
