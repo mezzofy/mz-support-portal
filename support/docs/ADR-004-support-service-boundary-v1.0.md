@@ -5,6 +5,8 @@
 **Cross-ref:** merchant ticketing `ADR-001` (realtime), `ADR-003` (search); `TD-support-console-v1.0.md`
 **Supersedes/relates:** builds on the ticketing ADR series (this is ADR-004 in the platform sequence)
 
+> ⚠️ **Partially superseded by [ADR-005](ADR-005-support-postgres-repivot-v1.0.md) (2026-09-23).** The **datastore** (DynamoDB `mz-platform-dev` — which never existed in the account) and the **staff-auth mechanism** (opaque `sessionType=STAFF` token) are replaced by **EC2 `mezzofy_ai` PostgreSQL** + **mz-ai-assistant JWT** (roles `support_agent`/`support_manager`). The **standalone `svc-support` service-boundary decision below still stands.**
+
 ---
 
 ## Context

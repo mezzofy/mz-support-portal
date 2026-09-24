@@ -6,6 +6,8 @@
 **Source of truth:** `handoffs/backend-to-frontend.md` (implemented SDL) · `handoffs/backend-to-lead-support-staff-auth-design.md` (frozen §4)
 **Cross-ref:** merchant ticketing `API-tickets-v2.0.md` (this API is the agent-facing sibling; the item layout is byte-compatible)
 
+> ⚠️ **Auth section updated by [ADR-005](ADR-005-support-postgres-repivot-v1.0.md) (Option B re-platform).** The **GraphQL SDL, operations, and error codes below are UNCHANGED** and remain authoritative. Only the **credential changed**: `Authorization: Bearer` now carries a **mz-ai-assistant JWT** (validated locally, role gate `support_agent`/`support_manager`|admin → else 403; missing/invalid → 401) instead of a svc-iam opaque `sessionType=STAFF` token. The `X-Agent-Id` dev bypass is unchanged. Store is `mezzofy_ai` Postgres.
+
 ---
 
 ## 1. Overview

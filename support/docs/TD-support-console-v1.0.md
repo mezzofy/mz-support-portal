@@ -5,6 +5,8 @@
 **Companion:** `API-support-console-v1.0.md` · `DB-support-console-delta-v1.0.md` · `ADR-004-support-service-boundary-v1.0.md`
 **Cross-ref:** merchant ticketing `TD-tickets-v2.0.md`, `ADR-001..003` (this module reuses those patterns unchanged)
 
+> ⚠️ **Data layer + auth re-platformed by [ADR-005](ADR-005-support-postgres-repivot-v1.0.md) (Option B).** The **standalone `svc-support` design + CSR layering + GraphQL surface below still stand.** What changed: the **repository layer** is now **synchronous psycopg2 on `mezzofy_ai` PostgreSQL** (not boto3/DynamoDB; cross-merchant queue = SQL `WHERE … ORDER BY created_at DESC LIMIT/OFFSET`, not GSI2 + in-memory), and **auth reuses the mz-ai-assistant JWT** (not svc-iam opaque tokens). Schema: `DB-support-console-postgres-v2.0.md`.
+
 ---
 
 ## 1. Goal

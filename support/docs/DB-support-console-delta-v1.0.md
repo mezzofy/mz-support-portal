@@ -4,6 +4,8 @@
 **Status:** Implemented (Gate 3 PASS 2026-09-19) · **Date:** 2026-09-19 · **Author:** Docs Agent
 **Cross-ref:** merchant ticketing `DB-tickets-schema-v2.0.md` (base Ticket/Message/Session/User schema — this doc is the DELTA only)
 
+> ⚠️ **SUPERSEDED by [DB-support-console-postgres-v2.0.md](DB-support-console-postgres-v2.0.md) (Option B, ADR-005).** This DynamoDB delta describes a store (`mz-platform-dev`) that was never provisioned. The console now runs on relational `tickets`/`messages`/`merchants` in `mezzofy_ai` Postgres. Kept for history only.
+
 ---
 
 ## 1. Summary — what changed on the shared table
