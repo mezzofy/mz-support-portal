@@ -9,6 +9,7 @@ import type { SupportTicketQueryParams } from '../../domain/entities/pagination.
 import type {
   ISupportTicketRepository,
   AssignTicketInput,
+  CreateSupportTicketInput,
 } from '../../domain/repositories/support-ticket.repository.interface'
 import type {
   SupportGraphQLDatasource,
@@ -79,6 +80,23 @@ export class SupportTicketRepositoryImpl implements ISupportTicketRepository {
   async getSupportTicket(ticketId: string): AsyncResult<SupportTicket> {
     try {
       const raw = await this.datasource.getSupportTicket(ticketId)
+      return { success: true, data: mapSupportTicket(raw) }
+    } catch (error) {
+      return { success: false, error: AppError.unknown(error) }
+    }
+  }
+
+  async createTicket(input: CreateSupportTicketInput): AsyncResult<SupportTicket> {
+    try {
+      const raw = await this.datasource.createSupportTicket({
+        merchantId: input.merchantId,
+        type: input.type,
+        priority: input.priority,
+        subject: input.subject,
+        description: input.description,
+        merchantName: input.merchantName,
+        onBehalfOfUserId: input.onBehalfOfUserId,
+      })
       return { success: true, data: mapSupportTicket(raw) }
     } catch (error) {
       return { success: false, error: AppError.unknown(error) }

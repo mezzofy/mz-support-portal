@@ -10,6 +10,7 @@ from controllers.graphql.types.message_types import Message
 from controllers.graphql.types.common_types import MessageResponse
 from controllers.graphql.inputs.support_inputs import (
     SupportTicketFiltersInput, AssignTicketInput, SendSupportMessageInput,
+    CreateSupportTicketInput,
 )
 from core.errors import SupportError
 from services.support_ticket_service import SupportTicketService
@@ -117,6 +118,27 @@ class SupportQuery:
 
 @strawberry.type
 class SupportMutation:
+    @strawberry.mutation
+    def create_support_ticket(
+        self,
+        info: Info[SupportGraphQLContext, None],
+        input: CreateSupportTicketInput,
+    ) -> SupportTicket:
+        try:
+            result = SupportTicketService().create_ticket(
+                merchant_id=input.merchant_id,
+                user_id=input.on_behalf_of_user_id or info.context.agent_id,
+                ticket_type=input.type,
+                priority=input.priority,
+                subject=input.subject,
+                description=input.description,
+                merchant_name=input.merchant_name,
+                attachments=_attachments_to_dicts(input.attachments),
+            )
+            return SupportTicket.from_dict(result)
+        except SupportError as e:
+            raise SupportGraphQLError(e)
+
     @strawberry.mutation
     def assign_ticket(
         self,

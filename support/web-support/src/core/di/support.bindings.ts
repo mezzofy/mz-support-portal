@@ -12,6 +12,7 @@ import type { IMessageRepository } from '../../domain/repositories/message.repos
 import { GetSupportTicketsUseCase } from '../../domain/usecases/ticket/get-support-tickets.usecase'
 import { GetMyAssignedTicketsUseCase } from '../../domain/usecases/ticket/get-my-assigned.usecase'
 import { GetSupportTicketUseCase } from '../../domain/usecases/ticket/get-support-ticket.usecase'
+import { CreateTicketUseCase } from '../../domain/usecases/ticket/create-ticket.usecase'
 import { AssignTicketUseCase } from '../../domain/usecases/ticket/assign-ticket.usecase'
 import { UpdateTicketStatusUseCase } from '../../domain/usecases/ticket/update-ticket-status.usecase'
 import { GetMessagesUseCase } from '../../domain/usecases/message/get-messages.usecase'
@@ -64,6 +65,14 @@ export function registerSupportDependencies(container: Container): void {
     .toDynamicValue((context) => {
       const repo = context.container.get<ISupportTicketRepository>(TYPES.SupportTicketRepository)
       return new GetSupportTicketUseCase(repo)
+    })
+    .inSingletonScope()
+
+  container
+    .bind(TYPES.CreateTicketUseCase)
+    .toDynamicValue((context) => {
+      const repo = context.container.get<ISupportTicketRepository>(TYPES.SupportTicketRepository)
+      return new CreateTicketUseCase(repo)
     })
     .inSingletonScope()
 

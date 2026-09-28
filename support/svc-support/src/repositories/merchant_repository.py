@@ -33,3 +33,14 @@ class MerchantRepository:
             logger.warning("Merchant name lookup failed for %s: %s", merchant_id, e)
             return None
         return row["name"] if row else None
+
+    def upsert(self, merchant_id: str, name: str) -> None:
+        """Register or refresh a merchant's display name (for resolve-on-read)."""
+        if not merchant_id or not name:
+            return
+        with get_db_client().cursor(commit=True) as cur:
+            cur.execute(
+                "INSERT INTO merchants (merchant_id, name) VALUES (%s, %s) "
+                "ON CONFLICT (merchant_id) DO UPDATE SET name = EXCLUDED.name",
+                (merchant_id, name),
+            )

@@ -54,7 +54,8 @@
       "title": "支援佇列",
       "totalCount": "個工單（所有商戶）",
       "searchPlaceholder": "依工單編號、主旨或商戶搜尋...",
-      "noTickets": "找不到工單"
+      "noTickets": "找不到工單",
+      "newTicket": "新增工單"
     },
     "myAssigned": {
       "title": "指派給我的工單",
@@ -142,6 +143,18 @@
       "agentName": "客服姓名",
       "team": "團隊",
       "confirm": "指派"
+    },
+    "createTicket": {
+      "title": "新增工單",
+      "merchantId": "商戶編號",
+      "merchantName": "商戶名稱",
+      "type": "類型",
+      "priority": "優先順序",
+      "subject": "主旨",
+      "subjectPlaceholder": "簡要摘要",
+      "description": "描述",
+      "descriptionPlaceholder": "描述問題...",
+      "confirm": "建立工單"
     },
     "chat": {
       "title": "對話",

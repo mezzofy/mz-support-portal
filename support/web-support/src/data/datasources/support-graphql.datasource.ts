@@ -165,6 +165,12 @@ const MARK_READ_MUTATION = `
   }
 `
 
+const CREATE_SUPPORT_TICKET_MUTATION = `
+  mutation CreateSupportTicket($input: CreateSupportTicketInput!) {
+    createSupportTicket(input: $input) { ${SUPPORT_TICKET_FIELDS} }
+  }
+`
+
 export interface SupportTicketFiltersInput {
   merchantId?: string
   status?: string
@@ -186,6 +192,16 @@ export interface SendSupportMessageInputWire {
   ticketId: string
   content: string
   attachments?: unknown[]
+}
+
+export interface CreateSupportTicketInputWire {
+  merchantId: string
+  type: string
+  priority: string
+  subject: string
+  description: string
+  merchantName?: string
+  onBehalfOfUserId?: string
 }
 
 @injectable()
@@ -294,6 +310,14 @@ export class SupportGraphQLDatasource {
       input,
     })
     return data.assignTicket
+  }
+
+  async createSupportTicket(input: CreateSupportTicketInputWire): Promise<RawSupportTicket> {
+    const data = await this.execute<{ createSupportTicket: RawSupportTicket }>(
+      CREATE_SUPPORT_TICKET_MUTATION,
+      { input },
+    )
+    return data.createSupportTicket
   }
 
   async updateTicketStatus(ticketId: string, status: string): Promise<RawSupportTicket> {

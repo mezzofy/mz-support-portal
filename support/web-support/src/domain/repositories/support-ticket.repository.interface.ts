@@ -12,10 +12,21 @@ export interface AssignTicketInput {
   assignedTeam?: string
 }
 
+export interface CreateSupportTicketInput {
+  merchantId: string
+  type: string
+  priority: string
+  subject: string
+  description: string
+  merchantName?: string
+  onBehalfOfUserId?: string
+}
+
 export interface ISupportTicketRepository {
   getSupportTickets(params: SupportTicketQueryParams): AsyncResult<PaginatedResponse<SupportTicket>>
   getMyAssignedTickets(params: SupportTicketQueryParams): AsyncResult<PaginatedResponse<SupportTicket>>
   getSupportTicket(ticketId: string): AsyncResult<SupportTicket>
+  createTicket(input: CreateSupportTicketInput): AsyncResult<SupportTicket>
   assignTicket(input: AssignTicketInput): AsyncResult<SupportTicket>
   updateTicketStatus(ticketId: string, status: string): AsyncResult<SupportTicket>
 }

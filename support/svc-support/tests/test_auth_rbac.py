@@ -120,3 +120,13 @@ def test_http_valid_support_token_passes_auth(client):
 def test_http_dev_bypass_passes_auth(client):
     r = gql(client, "{ __typename }", headers={"X-Agent-Id": "dev-1"})
     assert r.status_code == 200
+
+
+def test_http_create_ticket_non_staff_403(client):
+    # createSupportTicket is gated by get_context — a non-support role is rejected
+    # before the resolver (no DB touched).
+    tok = make_token(role="sales_rep", permissions=["sales_read"])
+    m = ('mutation { createSupportTicket(input:{merchantId:"m",type:"GENERAL",'
+         'priority:"LOW",subject:"abc",description:"long enough description"}){ ticketId } }')
+    r = gql(client, m, headers={"Authorization": "Bearer " + tok})
+    assert r.status_code == 403

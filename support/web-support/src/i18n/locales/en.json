@@ -54,7 +54,8 @@
       "title": "Support Queue",
       "totalCount": "tickets across all merchants",
       "searchPlaceholder": "Search by ticket ID, subject or merchant...",
-      "noTickets": "No tickets found"
+      "noTickets": "No tickets found",
+      "newTicket": "New ticket"
     },
     "myAssigned": {
       "title": "My Assigned Tickets",
@@ -142,6 +143,18 @@
       "agentName": "Agent Name",
       "team": "Team",
       "confirm": "Assign"
+    },
+    "createTicket": {
+      "title": "New Ticket",
+      "merchantId": "Merchant ID",
+      "merchantName": "Merchant Name",
+      "type": "Type",
+      "priority": "Priority",
+      "subject": "Subject",
+      "subjectPlaceholder": "Brief summary",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe the issue...",
+      "confirm": "Create ticket"
     },
     "chat": {
       "title": "Conversation",

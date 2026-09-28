@@ -13,6 +13,7 @@ export const TYPES = {
   GetSupportTicketsUseCase: Symbol.for('GetSupportTicketsUseCase'),
   GetMyAssignedTicketsUseCase: Symbol.for('GetMyAssignedTicketsUseCase'),
   GetSupportTicketUseCase: Symbol.for('GetSupportTicketUseCase'),
+  CreateTicketUseCase: Symbol.for('CreateTicketUseCase'),
   AssignTicketUseCase: Symbol.for('AssignTicketUseCase'),
   UpdateTicketStatusUseCase: Symbol.for('UpdateTicketStatusUseCase'),
   // Message use cases

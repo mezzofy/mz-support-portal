@@ -116,6 +116,35 @@ class SupportTicketService:
 
     # ── mutations ────────────────────────────────────────────────────────
 
+    def create_ticket(
+        self,
+        merchant_id: str,
+        user_id: str,
+        ticket_type: str,
+        priority: str,
+        subject: str,
+        description: str,
+        merchant_name: Optional[str] = None,
+        attachments: Optional[List[Dict]] = None,
+    ) -> Dict:
+        """Staff creates a ticket on behalf of a merchant (Option C intake).
+
+        Reuses the vendored ``TicketService.create_ticket`` (type/priority/length/
+        attachment validation, ULID, status=OPEN). Optionally upserts the merchant
+        display name so ``merchantName`` resolves on read.
+        """
+        if merchant_name:
+            self.merchant_repo.upsert(merchant_id, merchant_name)
+        ticket = TicketService(merchant_id=merchant_id).create_ticket(
+            user_id=user_id,
+            ticket_type=ticket_type,
+            priority=priority,
+            subject=subject,
+            description=description,
+            attachments=attachments,
+        )
+        return self._attach_merchant_name(ticket, {})
+
     def assign_ticket(
         self,
         ticket_id: str,

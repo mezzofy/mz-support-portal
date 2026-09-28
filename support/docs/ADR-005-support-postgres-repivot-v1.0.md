@@ -52,3 +52,7 @@ Frozen sub-decisions (Gate 1, 2026-09-23):
 ## AWS cleanup (the DynamoDB path is dead)
 
 The dedicated `svc-support` IAM user + inline DynamoDB policy + access key + EC2 `[svc-support]` profile + systemd `aws.conf` drop-in were all for DynamoDB → remove/deactivate unless S3 attachments (ADR-002) keep an AWS need. `ec2-website-deploy` was never modified.
+
+## Addendum (2026-09-28) — ticket intake decision (follow-on CR-support-ticket-intake)
+
+The re-platformed console had **no merchant ticket inflow** (merchants aren't mz-ai users, and the merchant `svc-tickets`/`svc-iam` DynamoDB stack is unprovisioned). Decision (human): **Option C — staff-created / on-behalf.** A `createSupportTicket` mutation was added to the **already-deployed svc-support** (reusing the vendored `TicketService.create_ticket`), gated by the same staff JWT — so agents log tickets on a merchant's behalf with **no new auth, no merchant-portal deploy, no schema change**. Merchant self-service (Options A = re-platform merchant svc-iam, B = reuse an existing merchant token, D = channel/API bridge) is **deferred** — see `plans/CR-svc-tickets-postgres-plan.md`. No new ADR needed (no new auth model); this addendum records the choice.

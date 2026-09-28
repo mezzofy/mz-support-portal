@@ -2,31 +2,61 @@
  * QueuePage — Support Console (/support/queue)
  * The all-merchant support queue: cross-merchant table + full filter set.
  */
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import { Plus } from 'lucide-react'
 import { DashboardShell } from '../components/DashboardShell'
 import { SupportFilters } from '../components/SupportFilters'
 import { SupportTicketTable } from '../components/SupportTicketTable'
+import { NewTicketDialog } from '../components/NewTicketDialog'
 import { Pagination } from '../../../../shared/components/Pagination'
 import { useSupportQueueViewModel } from '../viewmodels/useSupportQueueViewModel'
+import { useCreateTicketViewModel } from '../viewmodels/useCreateTicketViewModel'
+import type { CreateSupportTicketInput } from '../../../../domain/repositories/support-ticket.repository.interface'
 
 export function QueuePage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const vm = useSupportQueueViewModel()
+  const create = useCreateTicketViewModel()
+  const [dialogOpen, setDialogOpen] = useState(false)
 
   useEffect(() => {
     vm.loadTickets()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const closeDialog = () => {
+    setDialogOpen(false)
+    create.reset()
+  }
+
+  const handleCreate = async (input: CreateSupportTicketInput) => {
+    const ticket = await create.createTicket(input)
+    if (ticket) {
+      closeDialog()
+      navigate(`/tickets/${ticket.ticketId}`)
+    }
+  }
+
   return (
     <DashboardShell>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t('support.queue.title')}</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            {vm.totalItems} {t('support.queue.totalCount')}
-          </p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">{t('support.queue.title')}</h1>
+            <p className="text-sm text-gray-500 mt-1">
+              {vm.totalItems} {t('support.queue.totalCount')}
+            </p>
+          </div>
+          <button
+            onClick={() => setDialogOpen(true)}
+            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 shrink-0"
+          >
+            <Plus className="w-4 h-4" />
+            {t('support.queue.newTicket')}
+          </button>
         </div>
 
         <SupportFilters
@@ -70,6 +100,14 @@ export function QueuePage() {
           )}
         </div>
       </div>
+
+      <NewTicketDialog
+        open={dialogOpen}
+        pending={create.creating}
+        error={create.error}
+        onClose={closeDialog}
+        onCreate={handleCreate}
+      />
     </DashboardShell>
   )
 }

@@ -54,7 +54,8 @@
       "title": "支持队列",
       "totalCount": "个工单（所有商户）",
       "searchPlaceholder": "按工单编号、主题或商户搜索...",
-      "noTickets": "未找到工单"
+      "noTickets": "未找到工单",
+      "newTicket": "新建工单"
     },
     "myAssigned": {
       "title": "分配给我的工单",
@@ -142,6 +143,18 @@
       "agentName": "客服姓名",
       "team": "团队",
       "confirm": "分配"
+    },
+    "createTicket": {
+      "title": "新建工单",
+      "merchantId": "商户编号",
+      "merchantName": "商户名称",
+      "type": "类型",
+      "priority": "优先级",
+      "subject": "主题",
+      "subjectPlaceholder": "简要概述",
+      "description": "描述",
+      "descriptionPlaceholder": "描述问题...",
+      "confirm": "创建工单"
     },
     "chat": {
       "title": "对话",

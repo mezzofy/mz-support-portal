@@ -74,6 +74,7 @@ type Mutation {
   updateTicketStatus(ticketId: String!, status: String!): SupportTicket!
   sendSupportMessage(input: SendSupportMessageInput!): Message!      # senderType forced SUPPORT; senderId = your agent id
   markMessagesAsRead(ticketId: String!, userId: String!): MessageResponse!
+  createSupportTicket(input: CreateSupportTicketInput!): SupportTicket!   # NEW (CR-support-ticket-intake): staff logs a ticket on a merchant's behalf
 }
 
 type SupportTicket {
@@ -94,6 +95,7 @@ input SupportTicketFiltersInput { merchantId: String  status: String  type: Stri
 input AssignTicketInput { ticketId: String!  assigneeId: String!  assigneeName: String  assignedTeam: String }
 input SendSupportMessageInput { ticketId: String!  content: String!  attachments: [AttachmentInput!] }
 input AttachmentInput { id: String!  fileName: String!  fileSize: Int!  fileType: String!  url: String!  uploadedAt: String! }
+input CreateSupportTicketInput { merchantId: String!  type: String!  priority: String!  subject: String!  description: String!  merchantName: String  onBehalfOfUserId: String  attachments: [AttachmentInput!] }
 ```
 
 `SupportTicket` = the merchant `Ticket` model plus the support projection fields `merchantName`, `assigneeId`, `assigneeName`, `assignedTeam`, `assignedAt`.
@@ -142,6 +144,7 @@ Errors are returned as GraphQL `errors[]` with typed `extensions` (except the au
 - **`assignTicket(input)`** — writes the 4 sparse assignment attrs (`assigneeId`, `assigneeName`, `assignedTeam`, `assignedAt`). If `assignedTeam` is omitted it **defaults to the acting agent's team**. First assign on an `OPEN` ticket **auto-advances** it to `IN_PROGRESS`; the returned `SupportTicket` reflects that.
 - **`updateTicketStatus(ticketId, status)`** — reuses the vendored `STATUS_TRANSITIONS`; illegal transition → `INVALID_STATUS_TRANSITION`. Moving to `CLOSED` stamps `closedAt`.
 - **`sendSupportMessage(input)`** — the caller sends only `ticketId` + `content` (+ optional `attachments`). `senderType = SUPPORT` and `senderId = ctx.agentId` are **forced server-side**. Stored under the ticket's own merchant, so it appears on the merchant `web-tickets` view.
+- **`createSupportTicket(input)`** *(CR-support-ticket-intake, Option C)* — staff logs a ticket **on behalf of a merchant**. Creates an `OPEN` ticket for `merchantId`; `userId` = `onBehalfOfUserId` or the acting agent; an optional `merchantName` **upserts** the merchant reference so it resolves on read. Reuses the vendored `create_ticket` validation (type/priority; subject 3–200; description 10–5000; ≤5 attachments) → invalid input `VALIDATION_ERROR`. Staff-JWT gated like every op. *(Note: merchant self-service is deferred — Options A/B/D in `plans/CR-svc-tickets-postgres-plan.md`.)*
 - **`markMessagesAsRead(ticketId, userId)`** — pass your own agent id as `userId` when opening a thread; it marks the **other** side's (merchant/USER) messages read (one-sided).
 
 ## 8. Known limitations (MVP)
