@@ -126,7 +126,8 @@ def test_http_create_ticket_non_staff_403(client):
     # createSupportTicket is gated by get_context — a non-support role is rejected
     # before the resolver (no DB touched).
     tok = make_token(role="sales_rep", permissions=["sales_read"])
-    m = ('mutation { createSupportTicket(input:{merchantId:"m",type:"GENERAL",'
+    m = ('mutation { createSupportTicket(input:{requestorName:"Alice",'
+         'requestorEmail:"alice@example.com",type:"GENERAL",'
          'priority:"LOW",subject:"abc",description:"long enough description"}){ ticketId } }')
     r = gql(client, m, headers={"Authorization": "Bearer " + tok})
     assert r.status_code == 403

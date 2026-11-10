@@ -7,7 +7,7 @@ Two tiers:
     (auth is resolved in get_context BEFORE any resolver/DB call).
   * INTEGRATION (`@pytest.mark.integration`, auto-skip): repo/service/GraphQL against
     a REAL Postgres. Enabled ONLY when SVC_SUPPORT_TEST_DATABASE_URL is set — a
-    DEDICATED test DB, because the fixture TRUNCATEs tickets/messages/merchants.
+    DEDICATED test DB, because the fixture TRUNCATEs tickets/messages.
     Never falls back to DATABASE_URL, so a real/prod DB is never truncated.
 """
 import os
@@ -91,8 +91,8 @@ def gql(client, query: str, headers=None, variables=None):
 _DDL = """
 CREATE TABLE IF NOT EXISTS tickets (
     ticket_id CHAR(26) PRIMARY KEY,
-    merchant_id VARCHAR(64) NOT NULL,
-    user_id VARCHAR(64) NOT NULL,
+    requestor_name VARCHAR(255),
+    requestor_email VARCHAR(320),
     type VARCHAR(16) NOT NULL,
     status VARCHAR(16) NOT NULL DEFAULT 'OPEN',
     priority VARCHAR(8) NOT NULL,
@@ -108,17 +108,11 @@ CREATE TABLE IF NOT EXISTS tickets (
 CREATE TABLE IF NOT EXISTS messages (
     message_id CHAR(26) PRIMARY KEY,
     ticket_id CHAR(26) NOT NULL REFERENCES tickets(ticket_id) ON DELETE CASCADE,
-    merchant_id VARCHAR(64) NOT NULL,
     sender_id VARCHAR(64) NOT NULL,
     sender_type VARCHAR(8) NOT NULL,
     content VARCHAR(2000) NOT NULL,
     attachments JSONB NOT NULL DEFAULT '[]'::jsonb,
     is_read BOOLEAN NOT NULL DEFAULT FALSE,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-CREATE TABLE IF NOT EXISTS merchants (
-    merchant_id VARCHAR(64) PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 """
@@ -147,9 +141,5 @@ def pg(_pg_ready):
     """Clean + seed the test DB before each integration test; returns the client."""
     client = _pg_ready
     with client.cursor(commit=True) as cur:
-        cur.execute("TRUNCATE tickets, messages, merchants CASCADE")
-        cur.execute(
-            "INSERT INTO merchants (merchant_id, name) VALUES "
-            "('m_acme','Acme Retail'), ('m_blue','Blue Sky Cafe')"
-        )
+        cur.execute("TRUNCATE tickets, messages CASCADE")
     return client

@@ -2,24 +2,23 @@
 
 Auto-skip unless SVC_SUPPORT_TEST_DATABASE_URL is set (see conftest `pg`).
 Exercises real SQL: JSONB attachments, ILIKE search, ANY(), RETURNING, FK cascade,
-camelCase mapper, sparse-attr omission.
+camelCase mapper, sparse-attr omission. General-usage schema (requestor, no merchant).
 """
 import pytest
 from ulid import ULID
 
 from repositories.ticket_repository import TicketRepository
 from repositories.message_repository import MessageRepository
-from repositories.merchant_repository import MerchantRepository
 from core.errors import TicketNotFoundError
 
 pytestmark = pytest.mark.integration
 
 
-def _ticket(merchant_id="m_acme", **over):
+def _ticket(requestor_email="alice@example.com", **over):
     d = {
         "ticketId": str(ULID()),
-        "merchantId": merchant_id,
-        "userId": "u1",
+        "requestorName": "Alice Tan",
+        "requestorEmail": requestor_email,
         "type": "GENERAL",
         "status": "OPEN",
         "priority": "LOW",
@@ -40,7 +39,8 @@ def test_create_and_get_roundtrip(pg):
     created = repo.create(_ticket(attachments=att))
     got = repo.get_by_id(created["ticketId"])
     assert got["ticketId"] == created["ticketId"]
-    assert got["merchantId"] == "m_acme"
+    assert got["requestorEmail"] == "alice@example.com"
+    assert got["requestorName"] == "Alice Tan"
     assert got["attachments"] == att            # JSONB round-trips
     assert got["createdAt"].endswith("+00:00")  # ISO string, tz-aware
     # unassigned ticket omits the sparse fields entirely
@@ -51,26 +51,27 @@ def test_get_missing_returns_none(pg):
     assert TicketRepository().get_by_id(str(ULID())) is None
 
 
-def test_cross_merchant_list_filters_and_pagination(pg):
+def test_list_filters_and_pagination(pg):
     repo = TicketRepository()
-    repo.create(_ticket("m_acme", status="OPEN", priority="HIGH", type="BILLING", subject="refund needed"))
-    repo.create(_ticket("m_blue", status="IN_PROGRESS", priority="LOW", type="TECHNICAL", subject="scanner"))
-    repo.create(_ticket("m_acme", status="OPEN", priority="URGENT", type="GENERAL", subject="hello"))
+    repo.create(_ticket("alice@acme.com", status="OPEN", priority="HIGH", type="BILLING", subject="refund needed"))
+    repo.create(_ticket("bob@blue.com", status="IN_PROGRESS", priority="LOW", type="TECHNICAL", subject="scanner"))
+    repo.create(_ticket("carol@acme.com", status="OPEN", priority="URGENT", type="GENERAL", subject="hello"))
 
     items, total = repo.list_all_cross_merchant(page=1, limit=20)
     assert total == 3 and len(items) == 3
 
-    items, total = repo.list_all_cross_merchant(merchant_id="m_acme")
-    assert total == 2 and all(t["merchantId"] == "m_acme" for t in items)
-
     items, total = repo.list_all_cross_merchant(status_filter="OPEN")
     assert total == 2
     items, total = repo.list_all_cross_merchant(type_filter="TECHNICAL")
-    assert total == 1 and items[0]["merchantId"] == "m_blue"
+    assert total == 1 and items[0]["requestorEmail"] == "bob@blue.com"
 
     # case-insensitive search over subject
     items, total = repo.list_all_cross_merchant(search="REFUND")
     assert total == 1 and "refund" in items[0]["subject"].lower()
+
+    # search also matches the requestor
+    items, total = repo.list_all_cross_merchant(search="bob@blue")
+    assert total == 1 and items[0]["requestorEmail"] == "bob@blue.com"
 
     # pagination
     _, total = repo.list_all_cross_merchant(page=1, limit=2)
@@ -80,8 +81,8 @@ def test_cross_merchant_list_filters_and_pagination(pg):
 
 def test_unassigned_and_assignee_filters(pg):
     repo = TicketRepository()
-    a = repo.create(_ticket("m_acme"))
-    repo.create(_ticket("m_blue"))
+    a = repo.create(_ticket())
+    repo.create(_ticket("bob@blue.com"))
     repo.assign(a["ticketId"], assignee_id="agent-x", assignee_name="X", assigned_team="SUPPORT")
 
     items, total = repo.list_all_cross_merchant(unassigned=True)
@@ -115,9 +116,9 @@ def test_assign_writes_sparse_attrs(pg):
 
 
 def test_delete_cascades_messages(pg):
-    trepo, mrepo = TicketRepository(), MessageRepository("m_acme")
+    trepo, mrepo = TicketRepository(), MessageRepository()
     t = trepo.create(_ticket())
-    mrepo.create({"messageId": str(ULID()), "ticketId": t["ticketId"], "merchantId": "m_acme",
+    mrepo.create({"messageId": str(ULID()), "ticketId": t["ticketId"],
                   "senderId": "u1", "senderType": "USER", "content": "hi", "attachments": []})
     trepo.delete(t["ticketId"])
     assert trepo.get_by_id(t["ticketId"]) is None
@@ -127,10 +128,10 @@ def test_delete_cascades_messages(pg):
 # ── messages ─────────────────────────────────────────────────────────────────
 
 def test_messages_create_list_chronological(pg):
-    trepo, mrepo = TicketRepository(), MessageRepository("m_acme")
+    trepo, mrepo = TicketRepository(), MessageRepository()
     t = trepo.create(_ticket())
     for i, stype in enumerate(["USER", "SUPPORT", "USER"]):
-        mrepo.create({"messageId": str(ULID()), "ticketId": t["ticketId"], "merchantId": "m_acme",
+        mrepo.create({"messageId": str(ULID()), "ticketId": t["ticketId"],
                       "senderId": "s%d" % i, "senderType": stype, "content": "m%d" % i, "attachments": []})
     msgs = mrepo.list_by_ticket(t["ticketId"])
     assert [m["content"] for m in msgs] == ["m0", "m1", "m2"]     # oldest-first
@@ -138,23 +139,14 @@ def test_messages_create_list_chronological(pg):
 
 
 def test_mark_all_as_read_for_user_flips_other_side_only(pg):
-    trepo, mrepo = TicketRepository(), MessageRepository("m_acme")
+    trepo, mrepo = TicketRepository(), MessageRepository()
     t = trepo.create(_ticket())
-    mrepo.create({"messageId": str(ULID()), "ticketId": t["ticketId"], "merchantId": "m_acme",
-                  "senderId": "merchant-user", "senderType": "USER", "content": "q", "attachments": []})
-    mrepo.create({"messageId": str(ULID()), "ticketId": t["ticketId"], "merchantId": "m_acme",
+    mrepo.create({"messageId": str(ULID()), "ticketId": t["ticketId"],
+                  "senderId": "requestor-user", "senderType": "USER", "content": "q", "attachments": []})
+    mrepo.create({"messageId": str(ULID()), "ticketId": t["ticketId"],
                   "senderId": "agent-x", "senderType": "SUPPORT", "content": "a", "attachments": []})
     # agent opens the thread → marks messages NOT sent by the agent
     n = mrepo.mark_all_as_read_for_user(t["ticketId"], "agent-x")
     assert n == 1
     msgs = {m["senderId"]: m["isRead"] for m in mrepo.list_by_ticket(t["ticketId"])}
-    assert msgs["merchant-user"] is True and msgs["agent-x"] is False
-
-
-# ── merchants ────────────────────────────────────────────────────────────────
-
-def test_merchant_get_name(pg):
-    repo = MerchantRepository()
-    assert repo.get_name("m_acme") == "Acme Retail"
-    assert repo.get_name("m_missing") is None
-    assert repo.get_name("") is None
+    assert msgs["requestor-user"] is True and msgs["agent-x"] is False

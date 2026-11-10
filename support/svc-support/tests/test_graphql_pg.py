@@ -14,25 +14,24 @@ pytestmark = pytest.mark.integration
 DEV_HEADERS = {"X-Agent-Id": "agent-x", "X-Agent-Team": "SUPPORT"}
 
 
-def _seed(merchant_id="m_acme", status="OPEN"):
+def _seed(requestor_email="alice@acme.com", status="OPEN"):
     return TicketRepository().create({
-        "ticketId": str(ULID()), "merchantId": merchant_id, "userId": "u1",
+        "ticketId": str(ULID()), "requestorName": "Alice Tan", "requestorEmail": requestor_email,
         "type": "GENERAL", "status": status, "priority": "LOW",
         "subject": "Subject", "description": "A long-enough description.", "attachments": [],
     })
 
 
 def test_support_tickets_query_returns_seeded(pg, client):
-    _seed("m_acme")
-    _seed("m_blue")
-    q = "query { supportTickets(page:1, limit:20) { total tickets { ticketId merchantId merchantName status } } }"
+    _seed("alice@acme.com")
+    _seed("bob@blue.com")
+    q = "query { supportTickets(page:1, limit:20) { total tickets { ticketId requestorName requestorEmail status } } }"
     r = gql(client, q, headers=DEV_HEADERS)
     assert r.status_code == 200, r.text
     data = r.json()["data"]["supportTickets"]
     assert data["total"] == 2
-    names = {t["merchantId"]: t["merchantName"] for t in data["tickets"]}
-    assert names["m_acme"] == "Acme Retail"          # resolve-on-read
-    assert names["m_blue"] == "Blue Sky Cafe"
+    emails = {t["requestorEmail"] for t in data["tickets"]}
+    assert emails == {"alice@acme.com", "bob@blue.com"}
 
 
 def test_assign_ticket_mutation_auto_advances(pg, client):
