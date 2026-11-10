@@ -1,9 +1,9 @@
 /**
  * SupportTicket Entity — Support Console
  *
- * Mirrors the merchant Ticket shape plus support-staff fields
- * (merchantName resolved-on-read, assignee* sparse attributes).
- * Enum values match the svc-tickets constants exactly (byte-compatible writes).
+ * General-usage ticket: raised by a requestor (requestorName/requestorEmail),
+ * plus support-staff assignee* sparse attributes.
+ * Enum values match the svc-support constants exactly (byte-compatible writes).
  */
 
 export enum TicketStatus {
@@ -17,11 +17,20 @@ export enum TicketStatus {
 }
 
 export enum TicketType {
+  GENERAL = 'GENERAL',
   TECHNICAL = 'TECHNICAL',
+  BUG = 'BUG',
+  FEATURE_REQUEST = 'FEATURE_REQUEST',
   BILLING = 'BILLING',
   ACCOUNT = 'ACCOUNT',
-  FEATURE = 'FEATURE',
-  GENERAL = 'GENERAL',
+  SALES = 'SALES',
+  MARKETING = 'MARKETING',
+  HR = 'HR',
+  FINANCE = 'FINANCE',
+  LEGAL = 'LEGAL',
+  OPERATIONS = 'OPERATIONS',
+  IT = 'IT',
+  PROCUREMENT = 'PROCUREMENT',
   OTHER = 'OTHER',
 }
 
@@ -72,9 +81,8 @@ export interface Attachment {
 
 export interface SupportTicket {
   ticketId: string
-  merchantId: string
-  merchantName: string
-  userId: string
+  requestorName: string | null
+  requestorEmail: string | null
   subject: string
   description: string
   type: TicketType

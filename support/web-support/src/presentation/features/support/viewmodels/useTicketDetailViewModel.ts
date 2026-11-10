@@ -18,6 +18,7 @@ import type { GetMessagesUseCase } from '../../../../domain/usecases/message/get
 import type { SendSupportMessageUseCase } from '../../../../domain/usecases/message/send-support-message.usecase'
 import type { MarkMessagesAsReadUseCase } from '../../../../domain/usecases/message/mark-messages-read.usecase'
 import type { AssignTicketInput } from '../../../../domain/repositories/support-ticket.repository.interface'
+import { getAgentIdentity } from '../../auth/hooks/useAuth'
 
 interface TicketDetailState {
   ticket: SupportTicket | null
@@ -146,7 +147,9 @@ export const useTicketDetailViewModel = create<TicketDetailState>((set, get) => 
     if (!hasUnreadUser) return
     try {
       const useCase = resolve<MarkMessagesAsReadUseCase>(TYPES.MarkMessagesAsReadUseCase)
-      const result = await useCase.execute(ticket.ticketId, ticket.userId)
+      // Mark messages NOT sent by the acting agent (i.e. the requestor's USER messages) as read.
+      const agentId = getAgentIdentity()?.agentId || ''
+      const result = await useCase.execute(ticket.ticketId, agentId)
       if (result.success) {
         set((s) => ({
           messages: s.messages.map((m) =>

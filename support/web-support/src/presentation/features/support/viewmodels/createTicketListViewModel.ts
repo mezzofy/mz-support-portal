@@ -30,7 +30,6 @@ export interface TicketListState {
   statusFilter: string
   typeFilter: string
   priorityFilter: string
-  merchantFilter: string
   assigneeFilter: string
   unassignedOnly: boolean
   // actions
@@ -41,7 +40,6 @@ export interface TicketListState {
   setStatusFilter: (s: string) => void
   setTypeFilter: (t: string) => void
   setPriorityFilter: (p: string) => void
-  setMerchantFilter: (m: string) => void
   setAssigneeFilter: (a: string) => void
   setUnassignedOnly: (v: boolean) => void
   resetFilters: () => void
@@ -70,7 +68,6 @@ export function createTicketListViewModel(
     statusFilter: '',
     typeFilter: '',
     priorityFilter: '',
-    merchantFilter: '',
     assigneeFilter: '',
     unassignedOnly: false,
 
@@ -83,7 +80,6 @@ export function createTicketListViewModel(
         status: state.statusFilter || undefined,
         type: state.typeFilter || undefined,
         priority: state.priorityFilter || undefined,
-        merchantId: state.merchantFilter || undefined,
       }
       if (includeAssigneeFilters) {
         filters.assigneeId = state.assigneeFilter || undefined
@@ -137,10 +133,6 @@ export function createTicketListViewModel(
       set({ priorityFilter: p, currentPage: 1 })
       get().loadTickets()
     },
-    setMerchantFilter: (m) => {
-      set({ merchantFilter: m, currentPage: 1 })
-      get().loadTickets()
-    },
     setAssigneeFilter: (a) => {
       set({ assigneeFilter: a, unassignedOnly: false, currentPage: 1 })
       get().loadTickets()
@@ -155,7 +147,6 @@ export function createTicketListViewModel(
         statusFilter: '',
         typeFilter: '',
         priorityFilter: '',
-        merchantFilter: '',
         assigneeFilter: '',
         unassignedOnly: false,
         currentPage: 1,
@@ -169,7 +160,6 @@ export function createTicketListViewModel(
           s.statusFilter ||
           s.typeFilter ||
           s.priorityFilter ||
-          s.merchantFilter ||
           s.assigneeFilter ||
           s.unassignedOnly,
       )

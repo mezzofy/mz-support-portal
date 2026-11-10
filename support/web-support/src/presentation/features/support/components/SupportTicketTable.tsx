@@ -92,7 +92,7 @@ export function SupportTicketTable({ tickets, loading, showAssignee = true }: Pr
                   <span className="text-sm text-gray-900 line-clamp-2 max-w-xs">{ticket.subject}</span>
                 </td>
                 <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
-                  <span className="text-sm text-gray-700">{ticket.merchantName}</span>
+                  <span className="text-sm text-gray-700">{ticket.requestorName || '—'}</span>
                 </td>
                 <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                   <span className="text-sm text-gray-600">{t(`support.type.${ticket.type}`)}</span>

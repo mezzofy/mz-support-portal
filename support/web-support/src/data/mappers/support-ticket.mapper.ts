@@ -40,9 +40,8 @@ function toEnum<T extends Record<string, string>>(
 export function mapSupportTicket(raw: RawSupportTicket): SupportTicket {
   return {
     ticketId: raw.ticketId,
-    merchantId: raw.merchantId,
-    merchantName: raw.merchantName || raw.merchantId,
-    userId: raw.userId,
+    requestorName: raw.requestorName,
+    requestorEmail: raw.requestorEmail,
     subject: raw.subject,
     description: raw.description,
     type: toEnum(TicketType, raw.type, TicketType.OTHER),

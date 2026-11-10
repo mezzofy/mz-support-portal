@@ -1,6 +1,6 @@
 /**
  * SupportFilters — Support Console
- * Debounced search + status/type/priority/merchant + (queue only)
+ * Debounced search + status/type/priority + (queue only)
  * assignee/unassigned filters. Presentational; state lives in the viewmodel.
  */
 import { useEffect, useState } from 'react'
@@ -18,7 +18,6 @@ export interface SupportFiltersProps {
   statusFilter: string
   typeFilter: string
   priorityFilter: string
-  merchantFilter: string
   assigneeFilter?: string
   unassignedOnly?: boolean
   showAssigneeControls?: boolean
@@ -27,7 +26,6 @@ export interface SupportFiltersProps {
   onStatus: (s: string) => void
   onType: (t: string) => void
   onPriority: (p: string) => void
-  onMerchant: (m: string) => void
   onAssignee?: (a: string) => void
   onUnassigned?: (v: boolean) => void
   onClear: () => void
@@ -38,19 +36,12 @@ export function SupportFilters(props: SupportFiltersProps) {
 
   // Local search state, debounced before propagating to the viewmodel.
   const [search, setSearch] = useState(props.searchQuery)
-  const [merchant, setMerchant] = useState(props.merchantFilter)
   const debouncedSearch = useDebounce(search, 400)
-  const debouncedMerchant = useDebounce(merchant, 400)
 
   useEffect(() => {
     if (debouncedSearch !== props.searchQuery) props.onSearch(debouncedSearch)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch])
-
-  useEffect(() => {
-    if (debouncedMerchant !== props.merchantFilter) props.onMerchant(debouncedMerchant)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedMerchant])
 
   const selectClass =
     'border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white'
@@ -69,15 +60,6 @@ export function SupportFilters(props: SupportFiltersProps) {
             className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
           />
         </div>
-
-        <input
-          type="text"
-          value={merchant}
-          onChange={(e) => setMerchant(e.target.value)}
-          placeholder={t('support.filters.merchantPlaceholder')}
-          aria-label={t('support.filters.merchant')}
-          className="w-full sm:w-56 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-        />
       </div>
 
       <div className="flex flex-col sm:flex-row flex-wrap gap-3">

@@ -22,7 +22,6 @@ import { mapSupportTicket } from '../mappers/support-ticket.mapper'
 function toFiltersInput(params: SupportTicketQueryParams): SupportTicketFiltersInput {
   const f = params.filters
   const out: SupportTicketFiltersInput = {}
-  if (f.merchantId) out.merchantId = f.merchantId
   if (f.status) out.status = f.status
   if (f.type) out.type = f.type
   if (f.priority) out.priority = f.priority
@@ -89,13 +88,12 @@ export class SupportTicketRepositoryImpl implements ISupportTicketRepository {
   async createTicket(input: CreateSupportTicketInput): AsyncResult<SupportTicket> {
     try {
       const raw = await this.datasource.createSupportTicket({
-        merchantId: input.merchantId,
+        requestorName: input.requestorName,
+        requestorEmail: input.requestorEmail,
         type: input.type,
         priority: input.priority,
         subject: input.subject,
         description: input.description,
-        merchantName: input.merchantName,
-        onBehalfOfUserId: input.onBehalfOfUserId,
       })
       return { success: true, data: mapSupportTicket(raw) }
     } catch (error) {

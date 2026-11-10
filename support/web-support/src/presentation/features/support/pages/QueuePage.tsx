@@ -64,7 +64,6 @@ export function QueuePage() {
           statusFilter={vm.statusFilter}
           typeFilter={vm.typeFilter}
           priorityFilter={vm.priorityFilter}
-          merchantFilter={vm.merchantFilter}
           assigneeFilter={vm.assigneeFilter}
           unassignedOnly={vm.unassignedOnly}
           showAssigneeControls
@@ -73,7 +72,6 @@ export function QueuePage() {
           onStatus={vm.setStatusFilter}
           onType={vm.setTypeFilter}
           onPriority={vm.setPriorityFilter}
-          onMerchant={vm.setMerchantFilter}
           onAssignee={vm.setAssigneeFilter}
           onUnassigned={vm.setUnassignedOnly}
           onClear={vm.resetFilters}

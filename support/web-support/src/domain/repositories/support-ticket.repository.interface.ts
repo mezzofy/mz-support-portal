@@ -13,13 +13,12 @@ export interface AssignTicketInput {
 }
 
 export interface CreateSupportTicketInput {
-  merchantId: string
+  requestorName: string
+  requestorEmail: string
   type: string
   priority: string
   subject: string
   description: string
-  merchantName?: string
-  onBehalfOfUserId?: string
 }
 
 export interface ISupportTicketRepository {

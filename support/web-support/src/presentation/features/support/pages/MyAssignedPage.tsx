@@ -34,14 +34,12 @@ export function MyAssignedPage() {
           statusFilter={vm.statusFilter}
           typeFilter={vm.typeFilter}
           priorityFilter={vm.priorityFilter}
-          merchantFilter={vm.merchantFilter}
           showAssigneeControls={false}
           hasActiveFilters={vm.hasActiveFilters()}
           onSearch={vm.setSearchQuery}
           onStatus={vm.setStatusFilter}
           onType={vm.setTypeFilter}
           onPriority={vm.setPriorityFilter}
-          onMerchant={vm.setMerchantFilter}
           onClear={vm.resetFilters}
         />
 

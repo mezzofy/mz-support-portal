@@ -120,26 +120,21 @@ export function SupportTicketDetailPage() {
                   )}
                 </div>
 
-                {/* Merchant identity */}
+                {/* Requestor identity */}
                 <div className="bg-white rounded-lg border border-gray-200 p-5">
                   <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
-                    {t('support.detail.merchantIdentity')}
+                    {t('support.detail.requestorIdentity')}
                   </p>
                   <dl className="space-y-2.5 text-sm">
                     <div className="flex items-center gap-2">
-                      <Building2 className="w-4 h-4 text-gray-400 shrink-0" />
-                      <dt className="text-gray-500 w-24">{t('support.detail.merchant')}</dt>
-                      <dd className="text-gray-900 font-medium">{ticket.merchantName}</dd>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-4 shrink-0" />
-                      <dt className="text-gray-500 w-24">{t('support.detail.merchantId')}</dt>
-                      <dd className="text-gray-600 font-mono text-xs">{ticket.merchantId}</dd>
-                    </div>
-                    <div className="flex items-center gap-2">
                       <User className="w-4 h-4 text-gray-400 shrink-0" />
-                      <dt className="text-gray-500 w-24">{t('support.detail.raisedBy')}</dt>
-                      <dd className="text-gray-600 font-mono text-xs">{ticket.userId}</dd>
+                      <dt className="text-gray-500 w-24">{t('support.detail.requestorName')}</dt>
+                      <dd className="text-gray-900 font-medium">{ticket.requestorName || '—'}</dd>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Building2 className="w-4 h-4 text-gray-400 shrink-0" />
+                      <dt className="text-gray-500 w-24">{t('support.detail.requestorEmail')}</dt>
+                      <dd className="text-gray-600 font-mono text-xs">{ticket.requestorEmail || '—'}</dd>
                     </div>
                   </dl>
                 </div>

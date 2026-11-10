@@ -6,7 +6,6 @@
  */
 
 export interface SupportTicketFilters {
-  merchantId?: string
   status?: string
   type?: string
   priority?: string

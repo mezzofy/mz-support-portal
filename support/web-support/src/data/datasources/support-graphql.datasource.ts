@@ -29,9 +29,8 @@ export interface RawAttachment {
 
 export interface RawSupportTicket {
   ticketId: string
-  merchantId: string
-  merchantName: string | null
-  userId: string
+  requestorName: string | null
+  requestorEmail: string | null
   type: string
   status: string
   priority: string
@@ -78,9 +77,8 @@ const ATTACHMENT_FIELDS = `
 
 const SUPPORT_TICKET_FIELDS = `
   ticketId
-  merchantId
-  merchantName
-  userId
+  requestorName
+  requestorEmail
   type
   status
   priority
@@ -172,7 +170,6 @@ const CREATE_SUPPORT_TICKET_MUTATION = `
 `
 
 export interface SupportTicketFiltersInput {
-  merchantId?: string
   status?: string
   type?: string
   priority?: string
@@ -195,13 +192,12 @@ export interface SendSupportMessageInputWire {
 }
 
 export interface CreateSupportTicketInputWire {
-  merchantId: string
+  requestorName: string
+  requestorEmail: string
   type: string
   priority: string
   subject: string
   description: string
-  merchantName?: string
-  onBehalfOfUserId?: string
 }
 
 @injectable()

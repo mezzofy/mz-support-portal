@@ -1,9 +1,8 @@
 /**
  * NewTicketDialog — Support Console
  *
- * Staff logs a ticket on behalf of a merchant (Option C intake) via
- * createSupportTicket. merchantId is free-text (no directory yet); an optional
- * merchantName registers the merchant so the queue shows a name.
+ * Staff logs a general-usage ticket on behalf of a requestor via
+ * createSupportTicket (requestorName + requestorEmail).
  */
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -26,8 +25,8 @@ const DESC_MAX = 5000
 
 export function NewTicketDialog({ open, pending, error, onClose, onCreate }: Props) {
   const { t } = useTranslation()
-  const [merchantId, setMerchantId] = useState('')
-  const [merchantName, setMerchantName] = useState('')
+  const [requestorName, setRequestorName] = useState('')
+  const [requestorEmail, setRequestorEmail] = useState('')
   const [type, setType] = useState<string>(TicketType.GENERAL)
   const [priority, setPriority] = useState<string>(TicketPriority.MEDIUM)
   const [subject, setSubject] = useState('')
@@ -35,8 +34,10 @@ export function NewTicketDialog({ open, pending, error, onClose, onCreate }: Pro
 
   if (!open) return null
 
+  const emailValid = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(requestorEmail.trim())
   const valid =
-    merchantId.trim().length > 0 &&
+    requestorName.trim().length > 0 &&
+    emailValid &&
     subject.trim().length >= SUBJECT_MIN &&
     subject.trim().length <= SUBJECT_MAX &&
     description.trim().length >= DESC_MIN &&
@@ -45,8 +46,8 @@ export function NewTicketDialog({ open, pending, error, onClose, onCreate }: Pro
   const submit = () => {
     if (!valid) return
     onCreate({
-      merchantId: merchantId.trim(),
-      merchantName: merchantName.trim() || undefined,
+      requestorName: requestorName.trim(),
+      requestorEmail: requestorEmail.trim(),
       type,
       priority,
       subject: subject.trim(),
@@ -85,27 +86,28 @@ export function NewTicketDialog({ open, pending, error, onClose, onCreate }: Pro
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label htmlFor="nt-merchant-id" className={labelClass}>
-                {t('support.createTicket.merchantId')} *
+              <label htmlFor="nt-requestor-name" className={labelClass}>
+                {t('support.createTicket.requestorName')} *
               </label>
               <input
-                id="nt-merchant-id"
-                value={merchantId}
-                onChange={(e) => setMerchantId(e.target.value)}
+                id="nt-requestor-name"
+                value={requestorName}
+                onChange={(e) => setRequestorName(e.target.value)}
                 className={inputClass}
-                placeholder="merc_..."
                 autoFocus
               />
             </div>
             <div>
-              <label htmlFor="nt-merchant-name" className={labelClass}>
-                {t('support.createTicket.merchantName')}
+              <label htmlFor="nt-requestor-email" className={labelClass}>
+                {t('support.createTicket.requestorEmail')} *
               </label>
               <input
-                id="nt-merchant-name"
-                value={merchantName}
-                onChange={(e) => setMerchantName(e.target.value)}
+                id="nt-requestor-email"
+                type="email"
+                value={requestorEmail}
+                onChange={(e) => setRequestorEmail(e.target.value)}
                 className={inputClass}
+                placeholder="name@example.com"
               />
             </div>
           </div>
