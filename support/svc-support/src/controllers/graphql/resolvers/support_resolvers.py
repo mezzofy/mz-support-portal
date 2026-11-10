@@ -21,7 +21,6 @@ def _filter_args(filters: Optional[SupportTicketFiltersInput]) -> dict:
     if not filters:
         return {}
     return {
-        "merchant_id": filters.merchant_id,
         "status": filters.status,
         "type_": filters.type,
         "priority": filters.priority,
@@ -126,13 +125,12 @@ class SupportMutation:
     ) -> SupportTicket:
         try:
             result = SupportTicketService().create_ticket(
-                merchant_id=input.merchant_id,
-                user_id=input.on_behalf_of_user_id or info.context.agent_id,
+                requestor_name=input.requestor_name,
+                requestor_email=input.requestor_email,
                 ticket_type=input.type,
                 priority=input.priority,
                 subject=input.subject,
                 description=input.description,
-                merchant_name=input.merchant_name,
                 attachments=_attachments_to_dicts(input.attachments),
             )
             return SupportTicket.from_dict(result)

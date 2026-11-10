@@ -6,15 +6,15 @@ from controllers.graphql.types.attachment_types import Attachment
 
 @strawberry.type
 class SupportTicket:
-    """Frozen SDL §4 SupportTicket = merchant Ticket + merchantName + assignee*.
+    """General-usage SupportTicket = requestor identity + ticket fields + assignee*.
 
-    ``merchantName`` is resolved-on-read (R-7); ``assignee*`` / ``assignedTeam`` /
-    ``assignedAt`` are sparse item attributes (absent until first assignment).
+    ``requestorName`` / ``requestorEmail`` identify who raised the ticket (merchant
+    fields removed, CR-ticket-general-usage). ``assignee*`` / ``assignedTeam`` /
+    ``assignedAt`` are sparse attributes (absent until first assignment).
     """
     ticket_id: str
-    merchant_id: str
-    merchant_name: Optional[str] = None
-    user_id: str = ""
+    requestor_name: Optional[str] = None
+    requestor_email: Optional[str] = None
     type: str = ""
     status: str = ""
     priority: str = ""
@@ -36,9 +36,8 @@ class SupportTicket:
 
         return cls(
             ticket_id=data.get("ticketId", ""),
-            merchant_id=data.get("merchantId", ""),
-            merchant_name=data.get("merchantName"),
-            user_id=data.get("userId", ""),
+            requestor_name=data.get("requestorName"),
+            requestor_email=data.get("requestorEmail"),
             type=data.get("type", ""),
             status=data.get("status", ""),
             priority=data.get("priority", ""),

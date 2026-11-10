@@ -51,8 +51,8 @@ def _row_to_ticket(row: Dict) -> Dict:
     """Map a `tickets` row (snake_case) to the camelCase domain dict."""
     ticket = {
         "ticketId": row["ticket_id"],
-        "merchantId": row["merchant_id"],
-        "userId": row["user_id"],
+        "requestorName": row.get("requestor_name"),
+        "requestorEmail": row.get("requestor_email"),
         "type": row["type"],
         "status": row["status"],
         "priority": row["priority"],
@@ -78,10 +78,9 @@ def _row_to_ticket(row: Dict) -> Dict:
 class TicketRepository:
     """PostgreSQL CRUD for ticket rows in `mezzofy_ai.tickets`."""
 
-    def __init__(self, merchant_id: str = ""):
-        # merchant_id is optional for the support console (cross-merchant actor);
-        # kept in the signature for parity with the vendored svc-tickets repo.
-        self.merchant_id = merchant_id
+    def __init__(self):
+        # General-usage tickets are not merchant-scoped (CR-ticket-general-usage).
+        pass
 
     def get_by_id(self, ticket_id: str) -> Optional[Dict]:
         """Get a single ticket by ID."""
@@ -115,9 +114,9 @@ class TicketRepository:
         type_filter: Optional[str] = None,
         priority_filter: Optional[str] = None,
     ) -> Tuple[List[Dict], int]:
-        """Merchant-scoped listing (vendored — kept for parity, unused by support)."""
-        where = ["merchant_id = %s"]
-        params: List = [self.merchant_id]
+        """Unscoped listing with optional filters (vendored — kept for parity)."""
+        where: List[str] = []
+        params: List = []
         if status_filter:
             where.append("status = %s")
             params.append(status_filter)
@@ -133,7 +132,6 @@ class TicketRepository:
         self,
         page: int = 1,
         limit: int = 20,
-        merchant_id: Optional[str] = None,
         status_filter: Optional[str] = None,
         type_filter: Optional[str] = None,
         priority_filter: Optional[str] = None,
@@ -141,12 +139,9 @@ class TicketRepository:
         unassigned: Optional[bool] = None,
         search: Optional[str] = None,
     ) -> Tuple[List[Dict], int]:
-        """Cross-merchant queue: SQL filters + pagination; returns (page_items, total_matching)."""
+        """Global queue: SQL filters + pagination; returns (page_items, total_matching)."""
         where: List[str] = []
         params: List = []
-        if merchant_id:
-            where.append("merchant_id = %s")
-            params.append(merchant_id)
         if status_filter:
             where.append("status = %s")
             params.append(status_filter)
@@ -163,10 +158,11 @@ class TicketRepository:
             where.append("assignee_id IS NULL")
         if search:
             where.append(
-                "(subject ILIKE %s OR description ILIKE %s OR merchant_id ILIKE %s)"
+                "(subject ILIKE %s OR description ILIKE %s "
+                "OR requestor_name ILIKE %s OR requestor_email ILIKE %s)"
             )
             needle = f"%{search.strip()}%"
-            params.extend([needle, needle, needle])
+            params.extend([needle, needle, needle, needle])
         return self._paged(where, params, page, limit)
 
     def create(self, ticket_data: Dict) -> Dict:
@@ -176,15 +172,15 @@ class TicketRepository:
             cur.execute(
                 """
                 INSERT INTO tickets
-                    (ticket_id, merchant_id, user_id, type, status, priority,
+                    (ticket_id, requestor_name, requestor_email, type, status, priority,
                      subject, description, attachments, created_at, updated_at)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 RETURNING *
                 """,
                 (
                     ticket_data["ticketId"],
-                    ticket_data["merchantId"],
-                    ticket_data["userId"],
+                    ticket_data.get("requestorName"),
+                    ticket_data.get("requestorEmail"),
                     ticket_data["type"],
                     ticket_data["status"],
                     ticket_data["priority"],

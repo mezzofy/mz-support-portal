@@ -17,8 +17,6 @@ from core.utils.constants import (
     TICKET_STATUS_OPEN, TICKET_STATUS_IN_PROGRESS, SENDER_TYPE_SUPPORT,
 )
 from repositories.ticket_repository import TicketRepository
-from repositories.message_repository import MessageRepository
-from repositories.merchant_repository import MerchantRepository
 from services.ticket_service import TicketService
 from services.message_service import MessageService
 
@@ -26,33 +24,13 @@ logger = logging.getLogger(__name__)
 
 
 class SupportTicketService:
-    """Cross-merchant support operations for authenticated agents."""
+    """General-usage support operations for authenticated agents."""
 
     def __init__(
         self,
         ticket_repo: Optional[TicketRepository] = None,
-        merchant_repo: Optional[MerchantRepository] = None,
     ):
         self.ticket_repo = ticket_repo or TicketRepository()
-        self.merchant_repo = merchant_repo or MerchantRepository()
-
-    # ── merchantName resolve-on-read (R-7) ──────────────────────────────
-
-    def _attach_merchant_name(self, ticket: Dict, cache: Dict[str, Optional[str]]) -> Dict:
-        """Return a copy of ``ticket`` with a resolved ``merchantName`` field.
-
-        Falls back to the merchantId when the merchant record has no name /
-        isn't found, so the field is never empty for the UI.
-        """
-        merchant_id = ticket.get('merchantId', '')
-        if merchant_id not in cache:
-            cache[merchant_id] = self.merchant_repo.get_name(merchant_id)
-        name = cache[merchant_id] or merchant_id  # fallback → merchantId (TODO: GSI/denormalize)
-        return {**ticket, 'merchantName': name}
-
-    def _attach_names(self, tickets: List[Dict]) -> List[Dict]:
-        cache: Dict[str, Optional[str]] = {}
-        return [self._attach_merchant_name(t, cache) for t in tickets]
 
     # ── validation helpers ──────────────────────────────────────────────
 
@@ -71,7 +49,6 @@ class SupportTicketService:
         self,
         page: int = 1,
         limit: int = 20,
-        merchant_id: Optional[str] = None,
         status: Optional[str] = None,
         type_: Optional[str] = None,
         priority: Optional[str] = None,
@@ -79,21 +56,19 @@ class SupportTicketService:
         unassigned: Optional[bool] = None,
         search: Optional[str] = None,
     ) -> Tuple[List[Dict], int]:
-        """Cross-merchant queue with in-memory refine; returns (tickets, total)."""
+        """Global ticket queue; returns (tickets, total)."""
         self._validate_filters(status, type_, priority)
-        items, total = self.ticket_repo.list_all_cross_merchant(
-            page=page, limit=limit, merchant_id=merchant_id,
+        return self.ticket_repo.list_all_cross_merchant(
+            page=page, limit=limit,
             status_filter=status, type_filter=type_, priority_filter=priority,
             assignee_id=assignee_id, unassigned=unassigned, search=search,
         )
-        return self._attach_names(items), total
 
     def list_my_assigned(
         self,
         agent_id: str,
         page: int = 1,
         limit: int = 20,
-        merchant_id: Optional[str] = None,
         status: Optional[str] = None,
         type_: Optional[str] = None,
         priority: Optional[str] = None,
@@ -101,49 +76,44 @@ class SupportTicketService:
     ) -> Tuple[List[Dict], int]:
         """Convenience over ``list_support_tickets`` pinned to assignee = me."""
         return self.list_support_tickets(
-            page=page, limit=limit, merchant_id=merchant_id, status=status,
+            page=page, limit=limit, status=status,
             type_=type_, priority=priority, assignee_id=agent_id, search=search,
         )
 
     def get_support_ticket(self, ticket_id: str) -> Dict:
-        """Single ticket (any merchant) with resolved merchantName."""
-        ticket = TicketService(merchant_id="").get_ticket_by_id(ticket_id)
-        return self._attach_merchant_name(ticket, {})
+        """Single ticket by id."""
+        return TicketService().get_ticket_by_id(ticket_id)
 
     def list_messages(self, ticket_id: str) -> List[Dict]:
         """All messages on a ticket, chronological."""
-        return MessageService(merchant_id="").list_messages(ticket_id)
+        return MessageService().list_messages(ticket_id)
 
     # ── mutations ────────────────────────────────────────────────────────
 
     def create_ticket(
         self,
-        merchant_id: str,
-        user_id: str,
+        requestor_name: str,
+        requestor_email: str,
         ticket_type: str,
         priority: str,
         subject: str,
         description: str,
-        merchant_name: Optional[str] = None,
         attachments: Optional[List[Dict]] = None,
     ) -> Dict:
-        """Staff creates a ticket on behalf of a merchant (Option C intake).
+        """Staff creates a general-usage ticket on behalf of a requestor.
 
         Reuses the vendored ``TicketService.create_ticket`` (type/priority/length/
-        attachment validation, ULID, status=OPEN). Optionally upserts the merchant
-        display name so ``merchantName`` resolves on read.
+        attachment validation, ULID, status=OPEN).
         """
-        if merchant_name:
-            self.merchant_repo.upsert(merchant_id, merchant_name)
-        ticket = TicketService(merchant_id=merchant_id).create_ticket(
-            user_id=user_id,
+        return TicketService().create_ticket(
+            requestor_name=requestor_name,
+            requestor_email=requestor_email,
             ticket_type=ticket_type,
             priority=priority,
             subject=subject,
             description=description,
             attachments=attachments,
         )
-        return self._attach_merchant_name(ticket, {})
 
     def assign_ticket(
         self,
@@ -172,16 +142,15 @@ class SupportTicketService:
 
         # Auto-advance a brand-new OPEN ticket into IN_PROGRESS on first assign.
         if ticket.get('status') == TICKET_STATUS_OPEN:
-            ticket = TicketService(merchant_id="").update_ticket_status(
+            ticket = TicketService().update_ticket_status(
                 ticket_id, TICKET_STATUS_IN_PROGRESS
             )
 
-        return self._attach_merchant_name(ticket, {})
+        return ticket
 
     def update_status(self, ticket_id: str, status: str) -> Dict:
         """Transition status via the vendored state machine."""
-        ticket = TicketService(merchant_id="").update_ticket_status(ticket_id, status)
-        return self._attach_merchant_name(ticket, {})
+        return TicketService().update_ticket_status(ticket_id, status)
 
     def send_support_message(
         self,
@@ -190,15 +159,10 @@ class SupportTicketService:
         content: str,
         attachments: Optional[List[Dict]] = None,
     ) -> Dict:
-        """Post a reply as SUPPORT. senderType/​senderId are forced server-side.
-
-        The message is stored with the *ticket's own* merchantId so the merchant
-        view renders it correctly.
-        """
-        ticket = TicketService(merchant_id="").get_ticket_by_id(ticket_id)
-        merchant_id = ticket.get('merchantId', '')
-        service = MessageService(merchant_id=merchant_id)
-        return service.send_message(
+        """Post a reply as SUPPORT. senderType/​senderId are forced server-side."""
+        # Ensure the ticket exists (raises TicketNotFoundError otherwise).
+        TicketService().get_ticket_by_id(ticket_id)
+        return MessageService().send_message(
             ticket_id=ticket_id,
             sender_id=agent_id,           # forced: the acting agent
             content=content,
@@ -208,4 +172,4 @@ class SupportTicketService:
 
     def mark_messages_as_read(self, ticket_id: str, user_id: str) -> int:
         """Mark messages not sent by ``user_id`` as read (staff opening a thread)."""
-        return MessageService(merchant_id="").mark_messages_as_read(ticket_id, user_id)
+        return MessageService().mark_messages_as_read(ticket_id, user_id)

@@ -24,7 +24,6 @@ def _row_to_message(row: Dict) -> Dict:
     return {
         "messageId": row["message_id"],
         "ticketId": row["ticket_id"],
-        "merchantId": row["merchant_id"],
         "senderId": row["sender_id"],
         "senderType": row["sender_type"],
         "content": row["content"],
@@ -37,8 +36,9 @@ def _row_to_message(row: Dict) -> Dict:
 class MessageRepository:
     """PostgreSQL CRUD for message rows in `mezzofy_ai.messages`."""
 
-    def __init__(self, merchant_id: str):
-        self.merchant_id = merchant_id
+    def __init__(self):
+        # General-usage messages are not merchant-scoped (CR-ticket-general-usage).
+        pass
 
     def list_by_ticket(self, ticket_id: str) -> List[Dict]:
         """Get all messages for a ticket, chronological (oldest first)."""
@@ -67,15 +67,14 @@ class MessageRepository:
             cur.execute(
                 """
                 INSERT INTO messages
-                    (message_id, ticket_id, merchant_id, sender_id, sender_type,
+                    (message_id, ticket_id, sender_id, sender_type,
                      content, attachments, is_read, created_at)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 RETURNING *
                 """,
                 (
                     message_data["messageId"],
                     message_data["ticketId"],
-                    message_data["merchantId"],
                     message_data["senderId"],
                     message_data["senderType"],
                     message_data["content"],

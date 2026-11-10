@@ -27,13 +27,11 @@ class MessageService:
 
     def __init__(
         self,
-        merchant_id: str,
         ticket_repo: Optional[TicketRepository] = None,
         message_repo: Optional[MessageRepository] = None,
     ):
-        self.merchant_id = merchant_id
-        self.ticket_repo = ticket_repo or TicketRepository(merchant_id)
-        self.message_repo = message_repo or MessageRepository(merchant_id)
+        self.ticket_repo = ticket_repo or TicketRepository()
+        self.message_repo = message_repo or MessageRepository()
 
     def _ensure_ticket_exists(self, ticket_id: str) -> Dict:
         """Verify the ticket exists, raise TicketNotFoundError if not."""
@@ -80,7 +78,6 @@ class MessageService:
         message_data = {
             'messageId': message_id,
             'ticketId': ticket_id,
-            'merchantId': self.merchant_id,
             'senderId': sender_id,
             'senderType': sender_type,
             'content': content,

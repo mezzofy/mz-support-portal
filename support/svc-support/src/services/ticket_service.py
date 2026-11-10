@@ -35,11 +35,9 @@ class TicketService:
 
     def __init__(
         self,
-        merchant_id: str,
         ticket_repo: Optional[TicketRepository] = None,
     ):
-        self.merchant_id = merchant_id
-        self.ticket_repo = ticket_repo or TicketRepository(merchant_id)
+        self.ticket_repo = ticket_repo or TicketRepository()
 
     def list_tickets(
         self,
@@ -74,7 +72,8 @@ class TicketService:
 
     def create_ticket(
         self,
-        user_id: str,
+        requestor_name: str,
+        requestor_email: str,
         ticket_type: str,
         priority: str,
         subject: str,
@@ -117,8 +116,8 @@ class TicketService:
 
         ticket_data = {
             'ticketId': ticket_id,
-            'merchantId': self.merchant_id,
-            'userId': user_id,
+            'requestorName': requestor_name,
+            'requestorEmail': requestor_email,
             'type': ticket_type,
             'status': TICKET_STATUS_OPEN,
             'priority': priority,
